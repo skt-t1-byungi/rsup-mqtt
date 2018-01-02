@@ -10,7 +10,13 @@ export default class Subscription {
     return this
   }
 
-  unsubsribe () {
-    this._client.unsubsribe(this._topic)
+  off (listener = null) {
+    this._client.off(this._topic, listener)
+
+    return this
+  }
+
+  unsubsribe (removeListners = false) {
+    this._client.unsubsribe(this._topic, removeListners)
   }
 }

@@ -1,11 +1,11 @@
 import EventEmitter from 'eventemitter3'
 import Subscription from './Subscription'
 
-export default class Client extends EventEmitter {
+export default class Client {
   constructor (paho) {
-    super()
     this._paho = paho
-    this._closed = false
+    this._subscriptions = {}
+    this._emitter = new EventEmitter()
 
     paho.onMessageArrived = this._onMessage.bind(this)
     paho.onConnectionLost = this._onClose.bind(this)
@@ -17,39 +17,71 @@ export default class Client extends EventEmitter {
     try {
       payload = JSON.parse(message.payloadString)
     } catch (e) {
-      payload = {message: message.payloadString}
+      payload = { message: message.payloadString }
     }
 
     try {
-      this.emit(topic, payload)
-      this.emit('*', topic, payload)
+      this._emitter.emit(topic, payload)
+      this._emitter.emit('*', topic, payload)
     } catch (error) {
       setTimeout(() => { throw error }, 0)
     }
   }
 
   _onClose (response) {
-    this._closed = true
-
     try {
-      this.emit('close', response)
+      this._emitter.emit('close', response)
     } catch (error) {
       setTimeout(() => { throw error }, 0)
     }
   }
 
+  on (topic, listener) {
+    this._emitter.on(topic, listener)
+  }
+
+  once (topic, listener) {
+    this._emitter.once(topic, listener)
+  }
+
+  off (topic, listener = null) {
+    this._emitter.off(topic, listener)
+  }
+
   subscribe (topic) {
     this._paho.subscribe(topic)
 
-    return new Subscription(topic, this)
+    return this._subscription(topic)
   }
 
-  unsbscribe (topic) {
+  _subscription (topic) {
+    this._subscriptions[topic] = this._subscriptions[topic] || new Subscription(topic, this)
+
+    return this._subscriptions[topic]
+  }
+
+  unsbscribe (topic, removeListners = false) {
     this._paho.unsubscribe(topic)
+    delete this._subscriptions[topic]
+
+    if (removeListners) {
+      this.off(topic)
+    }
   }
 
-  publish (topic, payload, qos = 2) {
+  subscribed () {
+    return Object.keys(this._subscriptions)
+  }
+
+  send (topic, payload, qos = 2) {
     this._paho.send(topic, JSON.stringify(payload), qos)
+  }
+
+  /**
+   * @alias this.send
+   */
+  publish (...args) {
+    this.send(...args)
   }
 
   disconnect () {
@@ -58,6 +90,5 @@ export default class Client extends EventEmitter {
 
   reconnect () {
     this._paho.connect()
-    this._closed = false
   }
 }

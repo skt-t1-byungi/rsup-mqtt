@@ -1,9 +1,20 @@
 {
   "name": "rsup-mqtt",
   "version": "0.0.1",
-  "main": "src/index.js",
-  "author": "hsjung <hsjung@rsupport.com>",
+  "main": "dist/rsup-mqtt.js",
+  "module": "src/index.js",
+  "author": {
+    "email": "tiniwz@gmail.com",
+    "name": "skt-t1-byungi"
+  },
   "license": "MIT",
+  "scripts": {
+    "dev": "poi example/example",
+    "build:main": "poi build -c config/main.poi.js",
+    "build:umd-min": "poi build -c config/umd-min.poi.js",
+    "build": "npm run build:main & npm run build:umd-min",
+    "prepublish": "npm run build"
+  },
   "dependencies": {
     "eventemitter3": "^3.0.0",
     "paho.mqtt.js": "^2.0.5"
@@ -14,6 +25,7 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint-plugin-standard": "^3.0.1",
+    "poi": "^9.6.9"
   }
 }
