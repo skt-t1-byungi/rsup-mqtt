@@ -16,7 +16,15 @@ export default class Subscription {
     return this
   }
 
-  unsubsribe (removeListners = false) {
-    this._client.unsubsribe(this._topic, removeListners)
+  unsubscribe (removeListners = false) {
+    this._client.unsubscribe(this._topic, removeListners)
+  }
+
+  send (...args) {
+    this._client.send(this._topic, ...args)
+  }
+
+  publish (...args) {
+    this.send(...args)
   }
 }

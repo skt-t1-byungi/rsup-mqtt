@@ -60,7 +60,7 @@ export default class Client {
     return (this._subscriptions[topic] || (this._subscriptions[topic] = new Subscription(topic, this)))
   }
 
-  unsbscribe (topic, removeListners = false) {
+  unsubscribe (topic, removeListners = false) {
     this._paho.unsubscribe(topic)
 
     delete this._subscriptions[topic]

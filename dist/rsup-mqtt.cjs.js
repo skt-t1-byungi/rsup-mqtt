@@ -1,7 +1,7 @@
 /*!
- * rsup-mqtt v0.0.1
+ * rsup-mqtt v1.0.0
  * (c) 2018-present skt-t1-byungi <tiniwz@gmail.com>
- * Released under the MIT License.
+ * Released under the EPL License.
  */
 'use strict';
 
@@ -55,10 +55,26 @@ Subscription.prototype.off = function off (listener) {
   return this;
 };
 
-Subscription.prototype.unsubsribe = function unsubsribe (removeListners) {
+Subscription.prototype.unsubscribe = function unsubscribe (removeListners) {
     if ( removeListners === void 0 ) removeListners = false;
 
-  this._client.unsubsribe(this._topic, removeListners);
+  this._client.unsubscribe(this._topic, removeListners);
+};
+
+Subscription.prototype.send = function send () {
+    var args = [], len = arguments.length;
+    while ( len-- ) args[ len ] = arguments[ len ];
+
+  (ref = this._client).send.apply(ref, [ this._topic ].concat( args ));
+    var ref;
+};
+
+Subscription.prototype.publish = function publish () {
+    var args = [], len = arguments.length;
+    while ( len-- ) args[ len ] = arguments[ len ];
+
+  (ref = this).send.apply(ref, args);
+    var ref;
 };
 
 var Message = function Message(pahoMessgae) {
@@ -174,7 +190,7 @@ Client.prototype.subscribe = function subscribe (topic) {
   return this._subscriptions[topic] || (this._subscriptions[topic] = new Subscription(topic, this));
 };
 
-Client.prototype.unsbscribe = function unsbscribe (topic, removeListners) {
+Client.prototype.unsubscribe = function unsubscribe (topic, removeListners) {
     if ( removeListners === void 0 ) removeListners = false;
 
   this._paho.unsubscribe(topic);
