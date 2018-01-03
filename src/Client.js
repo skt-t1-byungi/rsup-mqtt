@@ -2,8 +2,9 @@ import EventEmitter from 'eventemitter3'
 import Subscription from './Subscription'
 
 export default class Client {
-  constructor (paho) {
+  constructor (paho, pahoOptions) {
     this._paho = paho
+    this._pahoOptions = pahoOptions
     this._subscriptions = {}
     this._emitter = new EventEmitter()
 
@@ -89,6 +90,16 @@ export default class Client {
   }
 
   reconnect () {
-    this._paho.connect()
+    return new Promise((resolve, reject) => {
+      this._paho.connect({
+        ...this._pahoOptions,
+
+        onSuccess: () => {
+          resolve()
+          this._emitter.emit('reconnect')
+        },
+        onFailure: error => reject(error)
+      })
+    })
   }
 }
