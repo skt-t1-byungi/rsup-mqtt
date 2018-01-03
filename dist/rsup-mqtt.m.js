@@ -153,10 +153,10 @@ function connect(options) {
   var port = options.port; if ( port === void 0 ) port = 4433;
   var path = options.path; if ( path === void 0 ) path = '/mqtt';
   var ssl = options.ssl; if ( ssl === void 0 ) ssl = false;
+  var clientId = options.clientId; if ( clientId === void 0 ) clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
   var host = options.host;
-  var clientId = options.clientId;
   var will = options.will;
-  var etcOptions = _objectWithoutProperties(options, ['port', 'path', 'ssl', 'host', 'clientId', 'will']);
+  var etcOptions = _objectWithoutProperties(options, ['port', 'path', 'ssl', 'clientId', 'host', 'will']);
 
   return new Promise(function (resolve, reject) {
     var pahoOptions = Object.assign({
