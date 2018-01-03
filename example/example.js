@@ -1,14 +1,14 @@
 import {connect} from '../src';
 
 (async () => {
-  const client1 = await connect({ host: 'test.mosquitto.org', port: 8080 })
+  const client1 = await connect({ host: 'broker.mqttdashboard.com', port: 8000 })
   client1.subscribe('topic/test')
     .on(payload => {
-      console.log(payload)
+      console.log(payload.json, payload.string, payload.bytes)
     })
 
   const client2 = await connect({ 
-    host: 'test.mosquitto.org', port: 8080,
+    host: 'broker.mqttdashboard.com', port: 8000,
     will:{
       topic: 'topic/test',
       payload : {
@@ -30,5 +30,4 @@ import {connect} from '../src';
 
   client2.publish('topic/test', { test: 12345 })
   client2.disconnect()
-
 })()

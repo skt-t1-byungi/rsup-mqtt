@@ -5,13 +5,13 @@ export default class Subscription {
   }
 
   on (listener) {
-    this._client.on(this._topic, listener)
+    this._client.onMessage(this._topic, listener)
 
     return this
   }
 
   off (listener = null) {
-    this._client.off(this._topic, listener)
+    this._client.removeMessageListener(this._topic, listener)
 
     return this
   }

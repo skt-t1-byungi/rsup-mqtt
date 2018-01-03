@@ -42,7 +42,7 @@ var Subscription = function Subscription(topic, client) {
 };
 
 Subscription.prototype.on = function on (listener) {
-  this._client.on(this._topic, listener);
+  this._client.onMessage(this._topic, listener);
 
   return this;
 };
@@ -50,7 +50,7 @@ Subscription.prototype.on = function on (listener) {
 Subscription.prototype.off = function off (listener) {
     if ( listener === void 0 ) listener = null;
 
-  this._client.off(this._topic, listener);
+  this._client.removeMessageListener(this._topic, listener);
 
   return this;
 };
@@ -61,28 +61,72 @@ Subscription.prototype.unsubsribe = function unsubsribe (removeListners) {
   this._client.unsubsribe(this._topic, removeListners);
 };
 
+var Message = function Message(pahoMessgae) {
+  this._pahoMessgae = pahoMessgae;
+};
+
+var prototypeAccessors = { topic: { configurable: true },json: { configurable: true },string: { configurable: true },bytes: { configurable: true } };
+
+prototypeAccessors.topic.get = function () {
+  return this._pahoMessgae.destinationName;
+};
+
+prototypeAccessors.json.get = function () {
+  return JSON.parse(this.string);
+};
+
+prototypeAccessors.string.get = function () {
+  return this._pahoMessgae.payloadString;
+};
+
+prototypeAccessors.bytes.get = function () {
+  return this._pahoMessgae.payloadBytes;
+};
+
+Message.prototype.toString = function toString () {
+  return this._pahoMessgae.payloadString;
+};
+
+Object.defineProperties( Message.prototype, prototypeAccessors );
+
+function isBuffer(value) {
+  return value instanceof ArrayBuffer || ArrayBuffer.isView(value);
+}
+
+function makePahoMessage(topic, payload, qos, retain) {
+  if ( qos === void 0 ) qos = 2;
+  if ( retain === void 0 ) retain = false;
+
+  if (typeof payload === 'object' && !isBuffer(payload)) {
+    payload = JSON.stringify(payload);
+  }
+
+  var message = new Paho.Message(payload);
+
+  message.destinationName = topic;
+  message.qos = qos;
+  message.retained = retain;
+
+  return message;
+}
+
 var Client = function Client(paho, pahoOptions) {
   this._paho = paho;
   this._pahoOptions = pahoOptions;
   this._subscriptions = {};
   this._emitter = new EventEmitter();
 
-  paho.onMessageArrived = this._onMessage.bind(this);
-  paho.onConnectionLost = this._onClose.bind(this);
+  paho.onMessageArrived = this._handleOnMessage.bind(this);
+  paho.onConnectionLost = this._handleOnClose.bind(this);
 };
 
-Client.prototype._onMessage = function _onMessage (message) {
-  var topic = message.destinationName;
-  var payload;
-  try {
-    payload = JSON.parse(message.payloadString);
-  } catch (e) {
-    payload = { message: message.payloadString };
-  }
+Client.prototype._handleOnMessage = function _handleOnMessage (message) {
+  var payload = new Message(message);
+  var topic = payload.topic;
 
   try {
-    this._emitter.emit(topic, payload);
-    this._emitter.emit('*', topic, payload);
+    this._emitter.emit(("message:" + topic), payload);
+    this._emitter.emit('message', topic, payload);
   } catch (error) {
     setTimeout(function () {
       throw error;
@@ -90,7 +134,7 @@ Client.prototype._onMessage = function _onMessage (message) {
   }
 };
 
-Client.prototype._onClose = function _onClose (response) {
+Client.prototype._handleOnClose = function _handleOnClose (response) {
   try {
     this._emitter.emit('close', response);
   } catch (error) {
@@ -100,36 +144,41 @@ Client.prototype._onClose = function _onClose (response) {
   }
 };
 
-Client.prototype.on = function on (topic, listener) {
-  this._emitter.on(topic, listener);
+Client.prototype.on = function on (eventName, listener) {
+  this._emitter.on(eventName, listener);
 };
 
-Client.prototype.once = function once (topic, listener) {
-  this._emitter.once(topic, listener);
+Client.prototype.onMessage = function onMessage (topic, listener) {
+  this.on(("message:" + topic), listener);
 };
 
-Client.prototype.off = function off (topic, listener) {
+Client.prototype.once = function once (eventName, listener) {
+  this._emitter.once(eventName, listener);
+};
+
+Client.prototype.off = function off (eventName, listener) {
     if ( listener === void 0 ) listener = null;
 
-  this._emitter.off(topic, listener);
+  this._emitter.off(eventName, listener);
+};
+
+Client.prototype.removeMessageListener = function removeMessageListener (topic, listener) {
+    if ( listener === void 0 ) listener = null;
+
+  this.off(("message:" + topic), listener);
 };
 
 Client.prototype.subscribe = function subscribe (topic) {
   this._paho.subscribe(topic);
 
-  return this._subscription(topic);
-};
-
-Client.prototype._subscription = function _subscription (topic) {
-  this._subscriptions[topic] = this._subscriptions[topic] || new Subscription(topic, this);
-
-  return this._subscriptions[topic];
+  return this._subscriptions[topic] || (this._subscriptions[topic] = new Subscription(topic, this));
 };
 
 Client.prototype.unsbscribe = function unsbscribe (topic, removeListners) {
     if ( removeListners === void 0 ) removeListners = false;
 
   this._paho.unsubscribe(topic);
+
   delete this._subscriptions[topic];
 
   if (removeListners) {
@@ -141,10 +190,12 @@ Client.prototype.subscribed = function subscribed () {
   return Object.keys(this._subscriptions);
 };
 
-Client.prototype.send = function send (topic, payload, qos) {
-    if ( qos === void 0 ) qos = 2;
+Client.prototype.send = function send (topic, payload, ref) {
+    if ( ref === void 0 ) ref = { qos: 2, retain: false };
+    var qos = ref.qos;
+    var retain = ref.retain;
 
-  this._paho.send(topic, JSON.stringify(payload), qos);
+  this._paho.send(makePahoMessage(topic, payload, qos, retain));
 };
 
 /**
@@ -179,34 +230,43 @@ Client.prototype.reconnect = function reconnect () {
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) { continue; } if (!Object.prototype.hasOwnProperty.call(obj, i)) { continue; } target[i] = obj[i]; } return target; }
 
+function wrapPahoWill(ref) {
+  var topic = ref.topic;
+  var payload = ref.payload;
+  var qos = ref.qos;
+  var retain = ref.retain;
+
+  return makePahoMessage(topic, payload, qos, retain);
+}
+
 function connect(options) {
   var port = options.port; if ( port === void 0 ) port = 4433;
   var path = options.path; if ( path === void 0 ) path = '/mqtt';
   var ssl = options.ssl; if ( ssl === void 0 ) ssl = false;
   var clientId = options.clientId; if ( clientId === void 0 ) clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
+  var keepalive = options.keepalive; if ( keepalive === void 0 ) keepalive = 20;
   var host = options.host;
   var will = options.will;
-  var etcOptions = _objectWithoutProperties(options, ['port', 'path', 'ssl', 'clientId', 'host', 'will']);
+  var username = options.username;
+  var etcOptions = _objectWithoutProperties(options, ['port', 'path', 'ssl', 'clientId', 'keepalive', 'host', 'will', 'username']);
 
   return new Promise(function (resolve, reject) {
     var pahoOptions = Object.assign({
       // rsupport default option
-      useSSL: ssl,
-      timeout: 2,
-      keepAliveInterval: 20,
+      timeout: 3,
       cleanSession: true,
-      mqttVersion: 3
+      mqttVersion: 3,
+      useSSL: ssl,
+      keepAliveInterval: keepalive
 
     }, etcOptions);
 
-    // convert will message
-    if (will) {
-      var message = new Paho.Message(JSON.stringify(will.payload || {}));
-      message.destinationName = will.topic;
-      message.qos = will.qos || 2;
-      message.retained = will.retain || true;
+    if (username) {
+      pahoOptions.userName = username;
+    }
 
-      pahoOptions.willMessage = message;
+    if (will) {
+      pahoOptions.willMessage = wrapPahoWill(will);
     }
 
     var paho = new Paho.Client(host, port, path, clientId);
