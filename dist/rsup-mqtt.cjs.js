@@ -10,7 +10,31 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var Paho = _interopDefault(require('paho.mqtt.js'));
-var EventEmitter = _interopDefault(require('eventemitter3'));
+
+var EventEmitter = function EventEmitter() {
+  this._listeners = {};
+};
+
+EventEmitter.prototype.on = function on (name, fn) {
+  (this._listeners[name] || (this._listeners[name] = [])).push(fn);
+};
+
+EventEmitter.prototype.off = function off (name, fn) {
+    if ( fn === void 0 ) fn = null;
+
+  if (fn) {
+    this._listeners[name] = (this._listeners[name] || []).filter(function (listener) { return fn !== listener; });
+  } else {
+    delete this._listeners[name];
+  }
+};
+
+EventEmitter.prototype.emit = function emit (name) {
+    var args = [], len = arguments.length - 1;
+    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+  (this._listeners[name] || []).slice().forEach(function (listener) { return listener.apply(void 0, args); });
+};
 
 var Subscription = function Subscription(topic, client) {
   this._topic = topic;
