@@ -22,7 +22,6 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "eventemitter3": "^3.0.0",
     "paho.mqtt.js": "^2.0.5"
   },
   "devDependencies": {
