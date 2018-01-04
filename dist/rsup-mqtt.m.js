@@ -1,5 +1,5 @@
 /*!
- * rsup-mqtt v1.0.3
+ * rsup-mqtt v1.0.4
  * (c) 2018-present skt-t1-byungi <tiniwz@gmail.com>
  * Released under the MIT License.
  */
@@ -11,6 +11,20 @@ var EventEmitter = function EventEmitter() {
 
 EventEmitter.prototype.on = function on (name, fn) {
   (this._listeners[name] || (this._listeners[name] = [])).push(fn);
+};
+
+EventEmitter.prototype.once = function once (name, fn) {
+    var this$1 = this;
+
+  var listener = function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+    fn.apply(void 0, args);
+    this$1.off(name, listener);
+  };
+
+  this.on(name, listener);
 };
 
 EventEmitter.prototype.off = function off (name, fn) {

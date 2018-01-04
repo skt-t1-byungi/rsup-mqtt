@@ -7,6 +7,15 @@ export default class EventEmitter {
     (this._listeners[name] || (this._listeners[name] = [])).push(fn)
   }
 
+  once (name, fn) {
+    const listener = (...args) => {
+      fn(...args)
+      this.off(name, listener)
+    }
+
+    this.on(name, listener)
+  }
+
   off (name, fn = null) {
     if (fn) {
       this._listeners[name] = (this._listeners[name] || []).filter(listener => fn !== listener)
