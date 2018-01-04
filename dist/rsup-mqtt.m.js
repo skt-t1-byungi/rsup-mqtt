@@ -1,7 +1,7 @@
 /*!
  * rsup-mqtt v1.0.0
  * (c) 2018-present skt-t1-byungi <tiniwz@gmail.com>
- * Released under the EPL License.
+ * Released under the MIT License.
  */
 import Paho from 'paho.mqtt.js';
 
@@ -53,6 +53,8 @@ Subscription.prototype.unsubscribe = function unsubscribe (removeListners) {
     if ( removeListners === void 0 ) removeListners = false;
 
   this._client.unsubscribe(this._topic, removeListners);
+
+  return this;
 };
 
 Subscription.prototype.send = function send () {
@@ -60,6 +62,8 @@ Subscription.prototype.send = function send () {
     while ( len-- ) args[ len ] = arguments[ len ];
 
   (ref = this._client).send.apply(ref, [ this._topic ].concat( args ));
+
+  return this;
     var ref;
 };
 
@@ -68,6 +72,8 @@ Subscription.prototype.publish = function publish () {
     while ( len-- ) args[ len ] = arguments[ len ];
 
   (ref = this).send.apply(ref, args);
+
+  return this;
     var ref;
 };
 

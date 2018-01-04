@@ -25,7 +25,7 @@ client.subscribe('test/topic')
 client.on('test/topic', message => console.log(message.string))
 client.publish('test/topic', 'hello mqtt')
 
-// or fluent pattern
+// or fluent interface
 client.subscribe('topic')
   .on(message => console.log(message.string))
   .publish('hello mqtt')
@@ -36,7 +36,7 @@ client.on('message', (topic, message)=>{
   client.disconnect()
 })
 ```
-console:
+console
 ```
 hello mqtt
 test/topic -> hello mqtt
@@ -99,7 +99,7 @@ Publish a message to a topic.
 Disconnect the connection.
 
 ### Client#reconnect():Promise
-Connect again using the same options as connect(). supports async/await.
+Connect again using the same options. supports async/await.
 
 ---
 
@@ -132,8 +132,8 @@ Returns a payload of json type.
 Returns a payload of buffer type.
 
 ## Better things than Paho Client
-### 1. connection process. (supports async/awat)
-before:
+### 🔗 connection process.
+before
 ```js
 const client = new Paho.MQTT.Client(host, port);
 
@@ -143,14 +143,14 @@ client.connect({
   }
 });
 ```
-after:
+after
 ```js
 const client = await connect({host,  port})
 client.subscribe('test/topic')
 ```
 
-### 2. message handling.
-before:
+### ✉️ message handling.
+before
 ```js
 client.onMessageArrived = message => {
   const topic = message.destinationName
@@ -160,14 +160,14 @@ client.onMessageArrived = message => {
 }
 // can not add more listners
 ```
-after:
+after
 ```js
 client.on('message', (topic, message)=>{
   console.log(topic, message.json)
 })
 ```
 
-### 3. Subscription (fluent pattern)
+### 📬 subscription (fluent interface)
 ```js
 const subscription = client.subscribe('topic')
 
@@ -177,15 +177,15 @@ subscription
   .unsubscribe()
 ```
 
-### 4. fixed a problem that prevented exception.
-before:
+### 🔧 fixed a problem that prevented exception.
+before
 ```js
 client.onMessageArrived = message => {
   throw new Error("throws an error")
 }
 // nothing..
 ```
-after:
+after
 ```js
 client.on('message', (topic, message)=>{
   throw new Error("throws an error")
@@ -193,6 +193,5 @@ client.on('message', (topic, message)=>{
 //fire error
 ```
 
-
 ## License
-EPL (https://projects.eclipse.org/projects/technology.paho)
+MIT
