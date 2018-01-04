@@ -43,7 +43,7 @@ test/topic -> hello mqtt
 ```
 
 ## API
-### connect(options:object):Promise<Client>
+### connect(options:object):Promise\<Client>
 Connects to the broker. supports async/await.
 - `options` (paho options is also available)
   - `port` defaults `4433`
@@ -103,19 +103,19 @@ Connect again using the same options. supports async/await.
 
 ---
 
-### Subscription#on(listener:function)
+### Subscription#on(listener:function):this
 Add an listener.
 
-### Subscription#off(listener:function?)
+### Subscription#off(listener:function?):this
 Remove the listener(s).
 
-### Subscription#publish(payload:string|object|Buffer, options:object)
+### Subscription#publish(payload:string|object|Buffer, options:object):this
 Publish a message. (@see `Client#publish`)
 
-### Subscription#send(payload:string|object|Buffer, options:object)
+### Subscription#send(payload:string|object|Buffer, options:object):this
 @alias `publish()`
 
-### Subscription#unsubscribe(removeListners:bool = false)
+### Subscription#unsubscribe(removeListners:bool = false):this
 Unsubscribe the subscription.
 
 ---
