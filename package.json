@@ -1,6 +1,6 @@
 {
   "name": "rsup-mqtt",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "dist/rsup-mqtt.cjs.js",
   "module": "dist/rsup-mqtt.m.js",
   "unpkg": "dist/rsup-mqtt.min.js",
