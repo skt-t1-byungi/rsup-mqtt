@@ -80,7 +80,7 @@ Remove the event listener(s).
 ### Client#subscribe(topic:string):Subscription
 Subscribe to a topic.
 
-### Client#unsubscribe(removeListners:bool = false)
+### Client#unsubscribe(removeListeners:bool = false)
 Unsubscribe from a topic.
 
 ### Client#subscribed()
@@ -115,7 +115,7 @@ Publish a message. (@see `Client#publish`)
 ### Subscription#send(payload:string|object|Buffer, options:object):this
 @alias `publish()`
 
-### Subscription#unsubscribe(removeListners:bool = false):this
+### Subscription#unsubscribe(removeListeners:bool = false):this
 Unsubscribe the subscription.
 
 ---
@@ -158,7 +158,7 @@ client.onMessageArrived = message => {
 
   console.log(topic, json)
 }
-// can not add more listners
+// can not add more listeners
 ```
 after
 ```js

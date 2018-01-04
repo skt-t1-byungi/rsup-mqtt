@@ -1,5 +1,5 @@
 /*!
- * rsup-mqtt v1.0.2
+ * rsup-mqtt v1.0.3
  * (c) 2018-present skt-t1-byungi <tiniwz@gmail.com>
  * Released under the MIT License.
  */
@@ -55,10 +55,10 @@ Subscription.prototype.off = function off (listener) {
   return this;
 };
 
-Subscription.prototype.unsubscribe = function unsubscribe (removeListners) {
-    if ( removeListners === void 0 ) removeListners = false;
+Subscription.prototype.unsubscribe = function unsubscribe (removeListeners) {
+    if ( removeListeners === void 0 ) removeListeners = false;
 
-  this._client.unsubscribe(this._topic, removeListners);
+  this._client.unsubscribe(this._topic, removeListeners);
 
   return this;
 };
@@ -196,14 +196,14 @@ Client.prototype.subscribe = function subscribe (topic) {
   return this._subscriptions[topic] || (this._subscriptions[topic] = new Subscription(topic, this));
 };
 
-Client.prototype.unsubscribe = function unsubscribe (topic, removeListners) {
-    if ( removeListners === void 0 ) removeListners = false;
+Client.prototype.unsubscribe = function unsubscribe (topic, removeListeners) {
+    if ( removeListeners === void 0 ) removeListeners = false;
 
   this._paho.unsubscribe(topic);
 
   delete this._subscriptions[topic];
 
-  if (removeListners) {
+  if (removeListeners) {
     this.off(topic);
   }
 };
