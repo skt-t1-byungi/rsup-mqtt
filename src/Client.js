@@ -14,13 +14,13 @@ export default class Client {
     paho.onConnectionLost = this._handleOnClose.bind(this)
   }
 
-  _handleOnMessage (message) {
-    const payload = new Message(message)
-    const topic = payload.topic
+  _handleOnMessage (pahoMessage) {
+    const message = new Message(pahoMessage)
+    const topic = message.topic
 
     try {
-      this._emitter.emit(`message:${topic}`, payload)
-      this._emitter.emit('message', topic, payload)
+      this._emitter.emit(`message:${topic}`, message)
+      this._emitter.emit('message', topic, message)
     } catch (error) {
       setTimeout(() => { throw error }, 0)
     }

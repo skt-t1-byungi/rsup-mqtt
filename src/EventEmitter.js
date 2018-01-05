@@ -3,22 +3,22 @@ export default class EventEmitter {
     this._listeners = {}
   }
 
-  on (name, fn) {
-    (this._listeners[name] || (this._listeners[name] = [])).push(fn)
+  on (name, listener) {
+    (this._listeners[name] || (this._listeners[name] = [])).push(listener)
   }
 
-  once (name, fn) {
-    const listener = (...args) => {
-      fn(...args)
+  once (name, listener) {
+    const wrapper = (...args) => {
+      listener(...args)
       this.off(name, listener)
     }
 
-    this.on(name, listener)
+    this.on(name, wrapper)
   }
 
-  off (name, fn = null) {
-    if (fn) {
-      this._listeners[name] = (this._listeners[name] || []).filter(listener => fn !== listener)
+  off (name, listener = null) {
+    if (listener) {
+      this._listeners[name] = (this._listeners[name] || []).filter(fn => fn !== listener)
     } else {
       delete this._listeners[name]
     }

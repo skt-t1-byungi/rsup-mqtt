@@ -16,30 +16,32 @@ var connect = require('rsup-mqtt').connect;
 ```
 
 ## Example
+### Basic
 ```js
-// supports async/await
 const client = await connect({host:'broker.mqttdashboard.com', port: 8000})
 
-// sub/pub topic
 client.subscribe('test/topic')
 client.on('test/topic', message => console.log(message.string))
 client.publish('test/topic', 'hello mqtt')
-
-// or fluent interface
-client.subscribe('topic')
-  .on(message => console.log(message.string))
-  .publish('hello mqtt')
-
-// listen to all messages
-client.on('message', (topic, message)=>{
-  console.log(topic + '->' + message.string)
-  client.disconnect()
-})
 ```
-console
+output
 ```
 hello mqtt
-test/topic -> hello mqtt
+```
+### Fluent interface
+```js
+const subscription = client.subscribe('topic');
+
+subscription
+  .on(message => console.log(message.string))
+  .publish('hello mqtt')
+```
+### Listen to all messages
+```js
+// listen to all messages
+client.on('message', (topic, message)=>{
+  console.log(message.string)
+})
 ```
 
 ## API
