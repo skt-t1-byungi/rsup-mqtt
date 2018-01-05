@@ -1,6 +1,6 @@
 {
   "name": "rsup-mqtt",
-  "version": "1.0.0",
+  "version": "1.0.5-0",
   "main": "dist/rsup-mqtt.cjs.js",
   "module": "dist/rsup-mqtt.m.js",
   "unpkg": "dist/rsup-mqtt.min.js",
@@ -15,7 +15,7 @@
     "type": "git",
     "url": "https://github.com/skt-t1-byungi/rsup-mqtt.git"
   },
-  "license": "EPL",
+  "license": "MIT",
   "scripts": {
     "dev": "poi example/example",
     "build": "bili --format cjs,es,umd-min --name rsup-mqtt --module-name RsupMQTT --banner",
