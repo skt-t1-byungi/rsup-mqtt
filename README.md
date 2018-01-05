@@ -20,9 +20,9 @@ var connect = require('rsup-mqtt').connect;
 ```js
 const client = await connect({host:'broker.mqttdashboard.com', port: 8000})
 
-client.subscribe('test/topic')
-client.on('test/topic', message => console.log(message.string))
-client.publish('test/topic', 'hello mqtt')
+client.subscribe('topic')
+client.on('topic', message => console.log(message.string))
+client.publish('topic', 'hello mqtt')
 ```
 output
 ```
@@ -38,7 +38,6 @@ subscription
 ```
 ### Listen to all messages
 ```js
-// listen to all messages
 client.on('message', (topic, message)=>{
   console.log(message.string)
 })
@@ -141,14 +140,14 @@ const client = new Paho.MQTT.Client(host, port);
 
 client.connect({
   onSuccess:function(){
-    client.subscribe('test/topic')
+    client.subscribe('topic')
   }
 });
 ```
 after
 ```js
 const client = await connect({host,  port})
-client.subscribe('test/topic')
+client.subscribe('topic')
 ```
 
 ### ✉️ message handling.
