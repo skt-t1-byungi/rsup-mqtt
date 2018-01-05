@@ -16,8 +16,8 @@ export default class Subscription {
     return this
   }
 
-  unsubscribe (removeListners = false) {
-    this._client.unsubscribe(this._topic, removeListners)
+  unsubscribe (removeListeners = false) {
+    this._client.unsubscribe(this._topic, removeListeners)
   }
 
   send (...args) {

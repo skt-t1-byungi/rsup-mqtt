@@ -1,6 +1,6 @@
 export default class Message {
-  constructor (pahoMessgae) {
-    this._pahoMessgae = pahoMessgae
+  constructor (pahoMessage) {
+    this._pahoMessgae = pahoMessage
   }
 
   get topic () {
