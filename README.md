@@ -21,7 +21,7 @@ var connect = require('rsup-mqtt').connect;
 const client = await connect({host:'broker.mqttdashboard.com', port: 8000})
 
 client.subscribe('topic')
-client.on('topic', message => console.log(message.string))
+client.onMessage('topic', message => console.log(message.string))
 client.publish('topic', 'hello mqtt')
 ```
 output
@@ -47,12 +47,12 @@ client.on('message', (topic, message)=>{
 ### connect(options:object):Promise\<Client>
 Connects to the broker. supports async/await.
 - `options` (paho options is also available)
+  - `host` required.
   - `port` defaults `4433`
   - `path` defaults `'/mqtt'`
   - `ssl` defaults `false`
   - `clientId` defaults random string
   - `keepalive` defaults `20`
-  - `host` required.
   - `will` optional
     - `topic`
     - `payload`
