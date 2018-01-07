@@ -2,6 +2,7 @@
 > :sparkles: simple wrapper for the eclipes paho(mqtt client) / better clean interface
 
 [![npm](https://img.shields.io/npm/v/rsup-mqtt.svg?style=flat-square)](https://www.npmjs.com/package/rsup-mqtt)
+[![npm](https://img.shields.io/npm/dt/rsup-mqtt.svg)](https://www.npmjs.com/package/rsup-mqtt)
 
 ## Install
 ```sh
