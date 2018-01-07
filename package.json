@@ -8,6 +8,11 @@
     "email": "tiniwz@gmail.com",
     "name": "skt-t1-byungi"
   },
+  "keywords": [
+    "mqtt",
+    "mqtt client",
+    "websocket"
+  ],
   "engines": {
     "node": ">=6"
   },
