@@ -24,7 +24,8 @@
   "scripts": {
     "dev": "poi example/example",
     "build": "bili --format cjs,es,umd-min --name rsup-mqtt --module-name RsupMQTT --banner",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "precommit": "npm build"
   },
   "dependencies": {
     "paho.mqtt.js": "^2.0.5"
@@ -37,6 +38,7 @@
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.14.3",
     "poi": "^9.6.9"
   }
 }
