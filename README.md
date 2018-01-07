@@ -187,6 +187,7 @@ client.onMessageArrived = message => {
 }
 // nothing..
 ```
+
 after
 ```js
 client.on('message', (topic, message)=>{
