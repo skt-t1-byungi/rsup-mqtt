@@ -16,6 +16,14 @@ import {connect} from "rsup-mqtt";
 var connect = require('rsup-mqtt').connect;
 ```
 
+### browser
+```html
+<script src="https://unpkg.com/rsup-mqtt"></script>
+<script>
+ var connect = RsupMQTT.connect;
+</script>
+```
+
 ## Example
 ### Basic
 ```js
