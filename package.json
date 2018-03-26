@@ -1,7 +1,7 @@
 {
   "name": "rsup-mqtt",
   "description": "✨ Simple wrapper for the eclipes paho(mqtt client) / better clean interface",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "main": "dist/rsup-mqtt.cjs.js",
   "module": "dist/rsup-mqtt.m.js",
   "unpkg": "dist/rsup-mqtt.min.js",
