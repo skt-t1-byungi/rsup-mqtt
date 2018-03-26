@@ -6,7 +6,7 @@ function wrapPahoWill ({topic, payload, qos, retain}) {
   return makePahoMessage(topic, payload, qos, retain)
 }
 
-export default function connect (options) {
+export default function connect (options, Ctor = Client) {
   const {
     port = 4433,
     path = '/mqtt',
@@ -31,20 +31,15 @@ export default function connect (options) {
       ...etcOptions
     }
 
-    if (username) {
-      pahoOptions.userName = username
-    }
-
-    if (will) {
-      pahoOptions.willMessage = wrapPahoWill(will)
-    }
+    if (username) pahoOptions.userName = username
+    if (will) pahoOptions.willMessage = wrapPahoWill(will)
 
     const paho = new Paho.Client(host, port, path, clientId)
 
     paho.connect({
       ...pahoOptions,
 
-      onSuccess: () => resolve(new Client(paho, pahoOptions)),
+      onSuccess: () => resolve(new Ctor(paho, pahoOptions)),
       onFailure: error => reject(error)
     })
   })
