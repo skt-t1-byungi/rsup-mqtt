@@ -12,4 +12,3 @@ import { connect } from '../src';
     client.disconnect()
   })
 })()
-

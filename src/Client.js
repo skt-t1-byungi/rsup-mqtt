@@ -4,9 +4,9 @@ import Message from './Message'
 import makePahoMessage from './makePahoMessage'
 
 export default class Client {
-  constructor (paho, pahoOptions) {
+  constructor ({paho, pahoOpts}) {
     this._paho = paho
-    this._pahoOptions = pahoOptions
+    this._pahoOpts = pahoOpts
     this._subscriptions = {}
     this._emitter = new EventEmitter()
 
@@ -29,8 +29,8 @@ export default class Client {
   _handleOnClose (response) {
     try {
       this._emitter.emit('close', response)
-    } catch (error) {
-      setTimeout(() => { throw error }, 0)
+    } catch (err) {
+      setTimeout(() => { throw err }, 0)
     }
   }
 
@@ -92,7 +92,7 @@ export default class Client {
   reconnect () {
     return new Promise((resolve, reject) => {
       this._paho.connect({
-        ...this._pahoOptions,
+        ...this._pahoOpts,
 
         onSuccess: () => {
           resolve()

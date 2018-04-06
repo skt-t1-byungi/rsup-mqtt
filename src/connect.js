@@ -7,6 +7,8 @@ function wrapPahoWill ({topic, payload, qos, retain}) {
 }
 
 export default function connect (options, Ctor = Client) {
+  if (typeof Ctor !== 'function') throw new TypeError('The second argument must be a function, or a constructor.')
+
   const {
     port = 4433,
     path = '/mqtt',
@@ -20,7 +22,7 @@ export default function connect (options, Ctor = Client) {
   } = options
 
   return new Promise((resolve, reject) => {
-    const pahoOptions = {
+    const pahoOpts = {
       // rsupport default option
       timeout: 3,
       cleanSession: true,
@@ -31,16 +33,24 @@ export default function connect (options, Ctor = Client) {
       ...etcOptions
     }
 
-    if (username) pahoOptions.userName = username
-    if (will) pahoOptions.willMessage = wrapPahoWill(will)
+    if (username) pahoOpts.userName = username
+    if (will) pahoOpts.willMessage = wrapPahoWill(will)
 
     const paho = new Paho.Client(host, port, path, clientId)
 
     paho.connect({
-      ...pahoOptions,
+      ...pahoOpts,
 
-      onSuccess: () => resolve(new Ctor(paho, pahoOptions)),
-      onFailure: error => reject(error)
+      onSuccess: () => {
+        try {
+          const instance = (Client === Ctor || Ctor.prototype instanceof Client)
+            ? new Ctor({paho, pahoOpts}) : Ctor({paho, pahoOpts})
+          resolve(instance)
+        } catch (err) {
+          reject(err)
+        }
+      },
+      onFailure: err => reject(err)
     })
   })
 }
