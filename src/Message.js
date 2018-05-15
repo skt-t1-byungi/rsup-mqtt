@@ -1,10 +1,10 @@
 export default class Message {
   constructor (pahoMessage) {
-    this._pahoMessgae = pahoMessage
+    this._pahoMessage = pahoMessage
   }
 
   get topic () {
-    return this._pahoMessgae.destinationName
+    return this._pahoMessage.destinationName
   }
 
   get json () {
@@ -12,14 +12,14 @@ export default class Message {
   }
 
   get string () {
-    return this._pahoMessgae.payloadString
+    return this._pahoMessage.payloadString
   }
 
   get bytes () {
-    return this._pahoMessgae.payloadBytes
+    return this._pahoMessage.payloadBytes
   }
 
   toString () {
-    return this._pahoMessgae.payloadString
+    return this._pahoMessage.payloadString
   }
 }

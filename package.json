@@ -31,9 +31,9 @@
     "paho.mqtt.js": "^2.0.5"
   },
   "devDependencies": {
-    "bili": "^3.0.15",
+    "bili": "^3.1.2",
     "eslint": "^4.19.1",
-    "eslint-config-byungi": "^0.0.12",
+    "eslint-config-byungi": "^0.0.16",
     "poi": "^9.6.13"
   },
   "eslintConfig": {
