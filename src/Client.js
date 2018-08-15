@@ -98,7 +98,7 @@ export default class Client {
   }
 
   reconnect () {
-    return this.constructor.pahoConnect(this._paho, this._opts)
+    return this.constructor.pahoConnect(this._paho, this._pahoOpts)
       .then(() => this._emitter.emit('reconnect'))
   }
 }
