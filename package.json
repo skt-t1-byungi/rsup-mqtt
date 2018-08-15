@@ -11,8 +11,8 @@
   },
   "keywords": [
     "mqtt",
-    "mqtt client",
-    "websocket"
+    "client",
+    "paho"
   ],
   "files": [
     "dist"
@@ -28,6 +28,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@skt-t1-byungi/event-emitter": "^0.0.6",
     "paho-client": "https://github.com/eclipse/paho.mqtt.javascript#v1.1.0"
   },
   "devDependencies": {

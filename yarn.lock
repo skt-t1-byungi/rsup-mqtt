@@ -573,6 +573,21 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@skt-t1-byungi/array-filter@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@skt-t1-byungi/array-filter/-/array-filter-0.1.0.tgz#d34c18303493e19da52db2bcf3e1c9dfaa36890e"
+
+"@skt-t1-byungi/array-for-each@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@skt-t1-byungi/array-for-each/-/array-for-each-0.1.0.tgz#6eff33d88572d19664be96a6b334edabe9892d45"
+
+"@skt-t1-byungi/event-emitter@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@skt-t1-byungi/event-emitter/-/event-emitter-0.0.6.tgz#4b840b6b8e62d1c690050b2517d3e9abdede3abb"
+  dependencies:
+    "@skt-t1-byungi/array-filter" "^0.1.0"
+    "@skt-t1-byungi/array-for-each" "^0.1.0"
+
 "@types/acorn@^4.0.3":
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/@types/acorn/-/acorn-4.0.3.tgz#d1f3e738dde52536f9aad3d3380d14e448820afd"
