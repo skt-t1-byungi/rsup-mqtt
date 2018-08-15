@@ -28,12 +28,12 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "paho.mqtt.js": "^2.0.5"
+    "paho-client": "https://github.com/eclipse/paho.mqtt.javascript#v1.1.0"
   },
   "devDependencies": {
     "bili": "^3.1.2",
-    "eslint": "^4.19.1",
-    "eslint-config-byungi": "^0.0.16",
+    "eslint": "^5.3.0",
+    "eslint-config-byungi": "^0.0.17",
     "poi": "^9.6.13"
   },
   "eslintConfig": {

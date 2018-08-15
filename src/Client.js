@@ -21,8 +21,8 @@ export default class Client {
     try {
       this._emitter.emit(`message:${topic}`, message)
       this._emitter.emit('message', topic, message)
-    } catch (error) {
-      setTimeout(() => { throw error }, 0)
+    } catch (err) {
+      setTimeout(() => { throw err }, 0)
     }
   }
 

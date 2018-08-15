@@ -1,4 +1,4 @@
-import Paho from 'paho.mqtt.js'
+import Paho from 'paho-client'
 import Client from './Client'
 import makePahoMessage from './makePahoMessage'
 

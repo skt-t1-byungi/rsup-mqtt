@@ -1,4 +1,4 @@
-import Paho from 'paho.mqtt.js'
+import Paho from 'paho-client'
 
 function isBuffer (value) {
   return value instanceof ArrayBuffer || ArrayBuffer.isView(value)
