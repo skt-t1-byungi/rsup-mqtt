@@ -14,23 +14,33 @@ export default class Client {
     paho.onConnectionLost = this._handleOnClose.bind(this)
   }
 
+  static pahoConnect (paho, pahoOpts) {
+    return new Promise((resolve, reject) => {
+      paho.connect({
+        ...pahoOpts,
+        onSuccess: resolve,
+        onFailure: error => reject(error)
+      })
+    })
+  }
+
   _handleOnMessage (pahoMessage) {
     const message = new Message(pahoMessage)
     const topic = message.topic
 
-    try {
-      this._emitter.emit(`message:${topic}`, message)
-      this._emitter.emit('message', topic, message)
-    } catch (err) {
-      setTimeout(() => { throw err }, 0)
-    }
+    this._emitter.emit(`message:${topic}`, message)
+    this._emitter.emit('message', topic, message)
   }
 
   _handleOnClose (response) {
-    try {
+    if (!this._emitter.has('close') && response.errorCode === 5) { // ERROR.INTERNAL_ERROR.code is 5
+      throw new Error(response.errorMessage)
+    }
+
+    if (response.reconnect) {
+      this._emitter.emit('reconnect', response)
+    } else {
       this._emitter.emit('close', response)
-    } catch (err) {
-      setTimeout(() => { throw err }, 0)
     }
   }
 
@@ -65,9 +75,7 @@ export default class Client {
 
     delete this._subscriptions[topic]
 
-    if (removeListeners) {
-      this.off(topic)
-    }
+    if (removeListeners) this.off(topic)
   }
 
   subscribed () {
@@ -90,16 +98,7 @@ export default class Client {
   }
 
   reconnect () {
-    return new Promise((resolve, reject) => {
-      this._paho.connect({
-        ...this._pahoOpts,
-
-        onSuccess: () => {
-          resolve()
-          this._emitter.emit('reconnect')
-        },
-        onFailure: error => reject(error)
-      })
-    })
+    return this.constructor.pahoConnect(this._paho, this._opts)
+      .then(() => this._emitter.emit('reconnect'))
   }
 }

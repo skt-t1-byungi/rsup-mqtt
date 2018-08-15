@@ -577,15 +577,20 @@
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@skt-t1-byungi/array-filter/-/array-filter-0.1.0.tgz#d34c18303493e19da52db2bcf3e1c9dfaa36890e"
 
+"@skt-t1-byungi/array-find-index@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@skt-t1-byungi/array-find-index/-/array-find-index-0.1.0.tgz#7776c345aca0dc70c07f78636caf033d3aada1cc"
+
 "@skt-t1-byungi/array-for-each@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@skt-t1-byungi/array-for-each/-/array-for-each-0.1.0.tgz#6eff33d88572d19664be96a6b334edabe9892d45"
 
-"@skt-t1-byungi/event-emitter@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@skt-t1-byungi/event-emitter/-/event-emitter-0.0.6.tgz#4b840b6b8e62d1c690050b2517d3e9abdede3abb"
+"@skt-t1-byungi/event-emitter@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@skt-t1-byungi/event-emitter/-/event-emitter-0.1.1.tgz#6e358d4b14c3508eb7f13e7bac1007e822987437"
   dependencies:
     "@skt-t1-byungi/array-filter" "^0.1.0"
+    "@skt-t1-byungi/array-find-index" "^0.1.0"
     "@skt-t1-byungi/array-for-each" "^0.1.0"
 
 "@types/acorn@^4.0.3":

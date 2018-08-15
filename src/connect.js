@@ -2,12 +2,10 @@ import Paho from 'paho-client'
 import Client from './Client'
 import makePahoMessage from './makePahoMessage'
 
-function wrapPahoWill ({topic, payload, qos, retain}) {
-  return makePahoMessage(topic, payload, qos, retain)
-}
-
-export default function connect (options, Ctor = Client) {
-  if (typeof Ctor !== 'function') throw new TypeError('The second argument must be a function, or a constructor.')
+export default function connect (userOpts, Ctor = Client) {
+  if (typeof Ctor !== 'function') {
+    throw new TypeError('The second argument must be a function, or a constructor.')
+  }
 
   const {
     port = 4433,
@@ -18,39 +16,34 @@ export default function connect (options, Ctor = Client) {
     host,
     will,
     username,
-    ...etcOptions
-  } = options
+    ...etcOpts
+  } = userOpts
 
-  return new Promise((resolve, reject) => {
-    const pahoOpts = {
-      // rsupport default option
-      timeout: 3,
-      cleanSession: true,
-      mqttVersion: 3,
-      useSSL: ssl,
-      keepAliveInterval: keepalive,
+  const pahoOpts = {
+    // rsupport default option
+    timeout: 3,
+    cleanSession: true,
+    mqttVersion: 3,
+    useSSL: ssl,
+    keepAliveInterval: keepalive,
+    ...etcOpts
+  }
 
-      ...etcOptions
-    }
+  if (username) pahoOpts.userName = username
+  if (will) pahoOpts.willMessage = wrapPahoWill(will)
 
-    if (username) pahoOpts.userName = username
-    if (will) pahoOpts.willMessage = wrapPahoWill(will)
+  const paho = new Paho.Client(host, port, path, clientId)
 
-    const paho = new Paho.Client(host, port, path, clientId)
-
-    paho.connect({
-      ...pahoOpts,
-
-      onSuccess: () => {
-        try {
-          const instance = (Client === Ctor || Ctor.prototype instanceof Client)
-            ? new Ctor({paho, pahoOpts}) : Ctor({paho, pahoOpts})
-          resolve(instance)
-        } catch (err) {
-          reject(err)
-        }
-      },
-      onFailure: err => reject(err)
+  return Client.pahoConnect(paho, pahoOpts)
+    .then(() => {
+      return createClient(Ctor, {paho, pahoOpts})
     })
-  })
+}
+
+function wrapPahoWill ({topic, payload, qos, retain}) {
+  return makePahoMessage(topic, payload, qos, retain)
+}
+
+function createClient (Ctor, setting) {
+  return (Client === Ctor || Ctor.prototype instanceof Client) ? new Ctor(setting) : Ctor(setting)
 }
