@@ -44,6 +44,10 @@ export default class Client {
     }
   }
 
+  connected () {
+    return this._paho.connected
+  }
+
   on (eventName, listener) {
     this._emitter.on(eventName, listener)
   }

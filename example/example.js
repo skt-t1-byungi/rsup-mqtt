@@ -25,8 +25,8 @@ import {connect} from '../src'
   console.log('subscribed', client1.subscribed())
 
   client2.on('close', evt => console.log('close', evt))
-  console.log('gogo close')
-  await client2.disconnect()
+  client2.disconnect()
+  // console.log('disconnected')
 
   client2.on('reconnect', _ => console.log('reconnected!'))
   await client2.reconnect()
