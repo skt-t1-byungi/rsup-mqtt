@@ -62,6 +62,10 @@ export default class Client {
     this.on(`message:${topic}`, listener)
   }
 
+  onSent (topic, listener) {
+    this.on(`sent:${topic}`, listener)
+  }
+
   once (eventName, listener) {
     this._emitter.once(eventName, listener)
   }

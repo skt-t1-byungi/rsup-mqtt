@@ -8,13 +8,7 @@ export default function connect (userOpts, Ctor = Client) {
     throw new TypeError('The second argument must be a function, or a constructor.')
   }
 
-  // normalize string type
-  if (typeof userOpts === 'string') {
-    const regexp = /^((wss?):\/\/)?([^/]+?)(:(\d+))?(\/.*)?$/
-    const [,, protocol, host,, port, path] = userOpts.match(regexp)
-
-    userOpts = { ssl: protocol === 'wss', host, port, path }
-  }
+  if (typeof userOpts === 'string') userOpts = normalizeStrOpts(userOpts)
 
   const {
     path = '/',
@@ -38,7 +32,11 @@ export default function connect (userOpts, Ctor = Client) {
     ...etcOpts
   }
 
-  const paho = new PahoClient(host || hosts[0], port, path, clientId)
+  if (!host && (!hosts || hosts.length === 0)) {
+    throw new TypeError('`host` option is required.')
+  }
+
+  const paho = new PahoClient(host || normalizeStrOpts(hosts[0]).host, port, path, clientId)
 
   return pahoConnect(paho, pahoOpts)
     .then(() => {
@@ -52,4 +50,11 @@ function wrapPahoWill ({topic, payload, ...opts}) {
 
 function createClient (Ctor, setting) {
   return (Client === Ctor || Ctor.prototype instanceof Client) ? new Ctor(setting) : Ctor(setting)
+}
+
+function normalizeStrOpts (str) {
+  const regexp = /^((wss?):\/\/)?([^/]+?)(:(\d+))?(\/.*)?$/
+  const [,, protocol, host,, port, path] = str.match(regexp)
+
+  return { ssl: protocol === 'wss', host, port, path }
 }
