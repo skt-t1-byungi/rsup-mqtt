@@ -40,6 +40,7 @@
     "eslint": "^5.3.0",
     "eslint-config-byungi": "^0.0.17",
     "esm": "^3.0.77",
+    "get-port": "^4.0.0",
     "mosca": "^2.8.3",
     "poi": "^9.6.13"
   },

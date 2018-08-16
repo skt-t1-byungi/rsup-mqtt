@@ -9,14 +9,8 @@ export function start (port, ctx) {
       httpOnly: true
     })
 
-    server.on('clientConnected', function (client) {
-      ctx.lastConnectClient = client
-    })
-
-    server.on('published', function (packet, client) {
-      ctx.lastPayload = packet.payload + ''
-      ctx.lastTopic = packet.topic
-      ctx.lastClient = client
+    server.on('published', (packet, client) => {
+      ctx[client] = packet
     })
 
     server.on('ready', resolve)
