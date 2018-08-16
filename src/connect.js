@@ -41,8 +41,8 @@ export default function connect (userOpts, Ctor = Client) {
     })
 }
 
-function wrapPahoWill ({topic, payload, qos, retain}) {
-  return makePahoMessage(topic, payload, qos, retain)
+function wrapPahoWill ({topic, payload, ...opts}) {
+  return makePahoMessage(topic, payload, opts)
 }
 
 function createClient (Ctor, setting) {

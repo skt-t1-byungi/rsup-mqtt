@@ -13,6 +13,7 @@ export default class Client {
     this._emitter = new EventEmitter()
 
     paho.onMessageArrived = this._handleOnMessage.bind(this)
+    paho.onMessageDelivered = this._handleOnSent.bind(this)
     paho.onConnectionLost = this._handleOnClose.bind(this)
   }
 
@@ -22,6 +23,14 @@ export default class Client {
 
     this._emitter.emit(`message:${topic}`, message)
     this._emitter.emit('message', topic, message)
+  }
+
+  _handleOnSent (pahoMessage) {
+    const message = new Message(pahoMessage)
+    const topic = message.topic
+
+    this._emitter.emit(`sent:${topic}`, message)
+    this._emitter.emit('sent', topic, message)
   }
 
   _handleOnClose (response) {
@@ -83,8 +92,8 @@ export default class Client {
     return Object.keys(this._subscriptions)
   }
 
-  send (topic, payload, {qos, retain} = {qos: 2, retain: false}) {
-    this._paho.send(makePahoMessage(topic, payload, qos, retain))
+  send (topic, payload, opts) {
+    this._paho.send(makePahoMessage(topic, payload, opts))
   }
 
   /**
