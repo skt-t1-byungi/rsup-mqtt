@@ -8,32 +8,37 @@ export default function connect (userOpts, Ctor = Client) {
     throw new TypeError('The second argument must be a function, or a constructor.')
   }
 
+  // normalize string type
+  if (typeof userOpts === 'string') {
+    const regexp = /^((wss?):\/\/)?([^/]+?)(:(\d+))?(\/.*)?$/
+    const [,, protocol, host,, port, path] = userOpts.match(regexp)
+
+    userOpts = { ssl: protocol === 'wss', host, port, path }
+  }
+
   const {
-    port = 4433,
-    path = '/mqtt',
+    path = '/',
     ssl = false,
     clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8),
-    keepalive = 20,
+    keepalive = 60,
+    port,
     host,
+    hosts,
     will,
     username,
     ...etcOpts
   } = userOpts
 
   const pahoOpts = {
-    // rsupport default option
-    timeout: 3,
-    cleanSession: true,
-    mqttVersion: 3,
+    hosts,
     useSSL: ssl,
     keepAliveInterval: keepalive,
+    userName: username,
+    willMessage: will && wrapPahoWill(will),
     ...etcOpts
   }
 
-  if (username) pahoOpts.userName = username
-  if (will) pahoOpts.willMessage = wrapPahoWill(will)
-
-  const paho = new PahoClient(host, port, path, clientId)
+  const paho = new PahoClient(host || hosts[0], port, path, clientId)
 
   return pahoConnect(paho, pahoOpts)
     .then(() => {
