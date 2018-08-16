@@ -1,4 +1,4 @@
-import {Client as PahoClient} from 'paho-client'
+import Paho from 'paho-client'
 import Client from './Client'
 import makePahoMessage from './makePahoMessage'
 import pahoConnect from './pahoConnect'
@@ -36,7 +36,7 @@ export default function connect (userOpts, Ctor = Client) {
     throw new TypeError('`host` option is required.')
   }
 
-  const paho = new PahoClient(host || normalizeStrOpts(hosts[0]).host, port, path, clientId)
+  const paho = new Paho.Client(host || normalizeStrOpts(hosts[0]).host, port, path, clientId)
 
   return pahoConnect(paho, pahoOpts)
     .then(() => {

@@ -19,6 +19,18 @@ export default class Message {
     return this._pahoMessage.payloadBytes
   }
 
+  get qos () {
+    return this._pahoMessage.qos
+  }
+
+  get dup () {
+    return this._pahoMessage.duplicate
+  }
+
+  get retain () {
+    return this._pahoMessage.retained
+  }
+
   toString () {
     return this._pahoMessage.payloadString
   }
