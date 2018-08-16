@@ -2,6 +2,8 @@ import EventEmitter from '@skt-t1-byungi/event-emitter'
 import Subscription from './Subscription'
 import Message from './Message'
 import makePahoMessage from './makePahoMessage'
+import pahoConnect from './pahoConnect'
+import ERROR from './errorCodes'
 
 export default class Client {
   constructor ({paho, pahoOpts}) {
@@ -14,16 +16,6 @@ export default class Client {
     paho.onConnectionLost = this._handleOnClose.bind(this)
   }
 
-  static pahoConnect (paho, pahoOpts) {
-    return new Promise((resolve, reject) => {
-      paho.connect({
-        ...pahoOpts,
-        onSuccess: resolve,
-        onFailure: error => reject(error)
-      })
-    })
-  }
-
   _handleOnMessage (pahoMessage) {
     const message = new Message(pahoMessage)
     const topic = message.topic
@@ -33,19 +25,24 @@ export default class Client {
   }
 
   _handleOnClose (response) {
-    if (!this._emitter.has('close') && response.errorCode === 5) { // ERROR.INTERNAL_ERROR.code is 5
-      throw new Error(response.errorMessage)
-    }
-
     if (response.reconnect) {
       this._emitter.emit('reconnect', response)
     } else {
       this._emitter.emit('close', response)
     }
+
+    // for error handling
+    if (response.errorCode === ERROR.OK) return
+
+    if (!this._emitter.has('error')) {
+      throw new Error(response.errorMessage)
+    } else {
+      this._emitter.emit('error', response)
+    }
   }
 
-  connected () {
-    return this._paho.connected
+  isConnected () {
+    return this._paho.isConnected()
   }
 
   on (eventName, listener) {
@@ -102,7 +99,7 @@ export default class Client {
   }
 
   reconnect () {
-    return this.constructor.pahoConnect(this._paho, this._pahoOpts)
+    return pahoConnect(this._paho, this._pahoOpts)
       .then(() => this._emitter.emit('reconnect'))
   }
 }

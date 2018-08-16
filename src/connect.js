@@ -1,6 +1,7 @@
-import Paho from 'paho-client'
+import {Client as PahoClient} from 'paho-client'
 import Client from './Client'
 import makePahoMessage from './makePahoMessage'
+import pahoConnect from './pahoConnect'
 
 export default function connect (userOpts, Ctor = Client) {
   if (typeof Ctor !== 'function') {
@@ -32,9 +33,8 @@ export default function connect (userOpts, Ctor = Client) {
   if (username) pahoOpts.userName = username
   if (will) pahoOpts.willMessage = wrapPahoWill(will)
 
-  const paho = new Paho.Client(host, port, path, clientId)
-
-  return Client.pahoConnect(paho, pahoOpts)
+  const paho = new PahoClient(host, port, path, clientId)
+  return pahoConnect(paho, pahoOpts)
     .then(() => {
       return createClient(Ctor, {paho, pahoOpts})
     })

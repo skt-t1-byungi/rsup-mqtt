@@ -26,7 +26,6 @@ import {connect} from '../src'
 
   client2.on('close', evt => console.log('close', evt))
   client2.disconnect()
-  // console.log('disconnected')
 
   client2.on('reconnect', _ => console.log('reconnected!'))
   await client2.reconnect()

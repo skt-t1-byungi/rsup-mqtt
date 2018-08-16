@@ -1,9 +1,5 @@
 import Paho from 'paho-client'
 
-function isBuffer (value) {
-  return value instanceof ArrayBuffer || ArrayBuffer.isView(value)
-}
-
 export default function makePahoMessage (topic, payload, qos = 2, retain = false) {
   if (typeof payload === 'object' && !isBuffer(payload)) {
     payload = JSON.stringify(payload)
@@ -16,4 +12,8 @@ export default function makePahoMessage (topic, payload, qos = 2, retain = false
   message.retained = retain
 
   return message
+}
+
+function isBuffer (value) {
+  return value instanceof ArrayBuffer || ArrayBuffer.isView(value)
 }
