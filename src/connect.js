@@ -34,6 +34,7 @@ export default function connect (userOpts, Ctor = Client) {
   if (will) pahoOpts.willMessage = wrapPahoWill(will)
 
   const paho = new PahoClient(host, port, path, clientId)
+
   return pahoConnect(paho, pahoOpts)
     .then(() => {
       return createClient(Ctor, {paho, pahoOpts})

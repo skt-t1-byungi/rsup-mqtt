@@ -25,26 +25,38 @@
   "scripts": {
     "dev": "poi example/example",
     "build": "bili --format cjs,es,umd-min --name rsup-mqtt --module-name RsupMQTT --banner",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "ava -c 1 -s"
   },
   "dependencies": {
     "@skt-t1-byungi/event-emitter": "^0.1.1",
     "paho-client": "https://github.com/eclipse/paho.mqtt.javascript#v1.1.0"
   },
   "devDependencies": {
+    "ava": "^0.25.0",
     "bili": "^3.1.2",
+    "browser-env": "^3.2.5",
+    "delay": "^3.0.0",
     "eslint": "^5.3.0",
     "eslint-config-byungi": "^0.0.17",
+    "esm": "^3.0.77",
+    "mosca": "^2.8.3",
     "poi": "^9.6.13"
   },
   "eslintConfig": {
     "extends": "byungi",
     "env": {
       "browser": true,
-      "node": false
+      "node": true
     }
   },
   "eslintIgnore": [
     "dist"
-  ]
+  ],
+  "ava": {
+    "require": [
+      "esm",
+      "./test/helpers/browserEnv.js"
+    ]
+  }
 }
