@@ -17,6 +17,30 @@ export default class Client {
     paho.onConnectionLost = this._handleOnClose.bind(this)
   }
 
+  get host () {
+    return this._paho.host
+  }
+
+  get port () {
+    return this._paho.port
+  }
+
+  get path () {
+    return this._paho.path
+  }
+
+  get uri () {
+    return this._paho.uri
+  }
+
+  get clientId () {
+    return this._paho.clientId
+  }
+
+  isConnected () {
+    return this._paho.isConnected()
+  }
+
   _handleOnMessage (pahoMessage) {
     const message = new Message(pahoMessage)
     const topic = message.topic
@@ -48,10 +72,6 @@ export default class Client {
     } else {
       this._emitter.emit('error', response)
     }
-  }
-
-  isConnected () {
-    return this._paho.isConnected()
   }
 
   on (eventName, listener) {

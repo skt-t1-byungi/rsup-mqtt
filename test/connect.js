@@ -1,10 +1,14 @@
 import test from 'ava'
-import {connect, Client} from '../src'
-import delay from 'delay'
-import {createConnection} from './_before'
+import {Client} from '../src'
+import {createConnection, getPort} from './_before'
 
-test.cb('connect fail', t => {
-  connect({host: 'localhost', port: 1}).catch(() => t.end())
+test('connect fail', async t => {
+  t.plan(1)
+  try {
+    await createConnection({host: 'localhost', port: 1})
+  } catch (err) {
+    t.pass()
+  }
 })
 
 test('connect success', async t => {
@@ -12,25 +16,33 @@ test('connect success', async t => {
   t.true(client instanceof Client)
 })
 
-test('publish message', async t => {
-  const client = await createConnection()
+test('normalize uri', async t => {
+  const uri = 'ws://localhost:' + getPort()
+  const client = await createConnection(uri + '/test')
 
-  client.publish('topic/test', 'hello~')
-
-  await delay(10)
-
-  // t.is(ctx.lastTopic, 'topic/test')
-  // t.is(ctx.lastPayload, 'hello~')
+  t.truthy(client.uri.match(uri))
+  t.is(client.host, 'localhost')
+  t.is(client.port, getPort())
+  t.is(client.path, '/test')
 })
 
-// test('subscribe topic', async t => {
-//   const client1 = await createConnection()
-//   const client2 = await createConnection()
+test('hosts fallback', async t => {
+  const client = await createConnection({
+    hosts: [
+      'ws://localhost:1/',
+      `ws://localhost:${getPort()}/`
+    ]
+  })
 
-//   client.publish('topic/test', 'hello~')
+  t.is(client.port, getPort())
+})
 
-//   await delay(10)
+test.only('custom cilent', async t => {
+  const CustomClient = class extends Client {}
 
-//   t.is(ctx.lastTopic, 'topic/test')
-//   t.is(ctx.lastPayload, 'hello~')
-// })
+  const client1 = await createConnection(null, CustomClient)
+  t.true(client1 instanceof CustomClient)
+
+  const client2 = await createConnection(null, setting => new CustomClient(setting))
+  t.true(client2 instanceof CustomClient)
+})

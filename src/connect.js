@@ -3,12 +3,12 @@ import Client from './Client'
 import makePahoMessage from './makePahoMessage'
 import pahoConnect from './pahoConnect'
 
-export default function connect (userOpts, Ctor = Client) {
+export default function connect (userOpts = {}, Ctor = Client) {
   if (typeof Ctor !== 'function') {
     throw new TypeError('The second argument must be a function, or a constructor.')
   }
 
-  if (typeof userOpts === 'string') userOpts = normalizeStrOpts(userOpts)
+  if (typeof userOpts === 'string') userOpts = parseUriToOpts(userOpts)
 
   const {
     path = '/',
@@ -24,19 +24,20 @@ export default function connect (userOpts, Ctor = Client) {
   } = userOpts
 
   const pahoOpts = {
-    hosts,
     useSSL: ssl,
-    keepAliveInterval: keepalive,
-    userName: username,
-    willMessage: will && wrapPahoWill(will),
-    ...etcOpts
+    keepAliveInterval: keepalive
   }
 
   if (!host && (!hosts || hosts.length === 0)) {
     throw new TypeError('`host` option is required.')
   }
 
-  const paho = new Paho.Client(host || normalizeStrOpts(hosts[0]).host, port, path, clientId)
+  if (will) pahoOpts.will = wrapPahoWill(will)
+  if (username) pahoOpts.userName = username
+  if (hosts) pahoOpts.hosts = hosts
+  Object.assign(pahoOpts, etcOpts)
+
+  const paho = new Paho.Client(host || parseUriToOpts(hosts[0]).host, port, path, clientId)
 
   return pahoConnect(paho, pahoOpts)
     .then(() => {
@@ -52,9 +53,9 @@ function createClient (Ctor, setting) {
   return (Client === Ctor || Ctor.prototype instanceof Client) ? new Ctor(setting) : Ctor(setting)
 }
 
-function normalizeStrOpts (str) {
+function parseUriToOpts (str) {
   const regexp = /^((wss?):\/\/)?([^/]+?)(:(\d+))?(\/.*)?$/
   const [,, protocol, host,, port, path] = str.match(regexp)
 
-  return { ssl: protocol === 'wss', host, port, path }
+  return {ssl: protocol === 'wss', port: port && parseInt(port), host, path}
 }

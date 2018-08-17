@@ -2,15 +2,12 @@ import mosca from 'mosca'
 
 let server
 
-export function start (port, ctx) {
+export function start (httpPort, port, ctx) {
   return new Promise(resolve => {
-    server = new mosca.Server({
-      http: {port},
-      httpOnly: true
-    })
+    server = new mosca.Server({ port, http: {port: httpPort} })
 
     server.on('published', (packet, client) => {
-      ctx[client] = packet
+      if (client) ctx[client.id] = packet
     })
 
     server.on('ready', resolve)
