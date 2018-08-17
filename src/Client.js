@@ -90,11 +90,11 @@ export default class Client {
     this._emitter.once(eventName, listener)
   }
 
-  off (eventName, listener = null) {
+  off (eventName, listener) {
     this._emitter.off(eventName, listener)
   }
 
-  removeMessageListener (topic, listener = null) {
+  removeMessageListener (topic, listener) {
     this.off(`message:${topic}`, listener)
   }
 

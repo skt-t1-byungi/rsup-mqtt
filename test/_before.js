@@ -12,8 +12,10 @@ test.before(async t => {
   return start(port, await getServerPort(), ctx)
 })
 
-test.after(t => {
-  Object.values(clientRepo).forEach(client => client.disconnect())
+test.after.always(t => {
+  Object.values(clientRepo).forEach(client => {
+    if (client.isConnected()) client.disconnect()
+  })
   return stop()
 })
 

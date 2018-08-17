@@ -37,7 +37,7 @@ test('hosts fallback', async t => {
   t.is(client.port, getPort())
 })
 
-test.only('custom cilent', async t => {
+test('custom client instance', async t => {
   const CustomClient = class extends Client {}
 
   const client1 = await createConnection(null, CustomClient)

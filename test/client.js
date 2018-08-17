@@ -6,35 +6,76 @@ test('publish', async t => {
   const client = await createConnection()
   client.publish('topic/test1', 'hello~')
 
-  await delay(10)
+  await delay(300)
 
   t.is(client.getCtx('topic'), 'topic/test1')
   t.is(client.getCtx('payload').toString(), 'hello~')
 })
 
-test.cb('subscribe, onMessage', t => {
-  Promise.all([createConnection(), createConnection()])
-    .then(([receiver, sender]) => {
-      receiver.subscribe('topic/test2')
+test('subscribe, onMessage', async t => {
+  const [receiver, sender] = await Promise.all([createConnection(), createConnection()])
+  receiver.subscribe('topic/subscribe-test')
 
-      t.plan(1)
+  t.plan(1)
+  receiver.onMessage('topic/subscribe-test', m => t.is(m.string, 'subscribed!'))
+  sender.publish('topic/subscribe-test', 'subscribed!')
 
-      receiver.onMessage('topic/test2', m => {
-        t.is(m.string, 'subscribed!')
-        t.end()
-      })
-
-      sender.publish('topic/test2', 'subscribed!')
-    })
+  await delay(300)
 })
 
-// test.only('unsubscribe, susbcribed', async t => {
-//   const [receiver, sender] = await Promise.all([createConnection(), createConnection()])
+test('unsubscribe', async t => {
+  const [receiver, sender] = await Promise.all([createConnection(), createConnection()])
 
-//   receiver.subscribe('topic/test1')
-//   receiver.subscribe('topic/test2')
+  receiver.subscribe('topic/unsubscribe-test')
+  receiver.onMessage('topic/unsubscribe-test', m => t.is(m.string, 'test1'))
+  sender.publish('topic/unsubscribe-test', 'test1')
 
-//   t.deepEqual(receiver.subscribed(), ['topic/test1', 'topic/test2'])
-//   // receiver.onMessage('topic/test1', m => )
-//   // sender.publish('topic/test1', '1')
-// })
+  await delay(300)
+
+  receiver.onMessage('topic/unsubscribe-test', m => t.fail())
+  receiver.unsubscribe('topic/unsubscribe-test')
+
+  sender.publish('topic/unsubscribe-test', 'test1')
+  sender.publish('topic/unsubscribe-test', 'test2')
+
+  await delay(300)
+})
+
+test('subscribed', async t => {
+  const client = await createConnection()
+
+  client.subscribe('topic/test1')
+  client.subscribe('topic/test2')
+
+  t.deepEqual(client.subscribed(), ['topic/test1', 'topic/test2'])
+})
+
+test('onSent', async t => {
+  const [receiver, sender] = await Promise.all([createConnection(), createConnection()])
+  receiver.subscribe('topic/onset-test')
+
+  t.plan(2)
+  sender.onSent('topic/onset-test', m => t.is(m.string, 'qos' + m.qos))
+
+  // qos 0
+  sender.publish('topic/onset-test', 'qos0')
+
+  // qos 1
+  sender.publish('topic/onset-test', 'qos1', {qos: 1})
+  await delay(300)
+
+  // qos2 pass - mosca does not support qos 2
+})
+
+test('disconnect, reconnect, close and reconnect evt', async t => {
+  const client = await createConnection()
+
+  t.plan(5)
+  client.on('close', resp => t.pass())
+  client.on('reconnect', resp => t.pass())
+  t.true(client.isConnected())
+  client.disconnect()
+  t.false(client.isConnected())
+  await client.reconnect()
+  t.true(client.isConnected())
+})

@@ -10,7 +10,13 @@ export default class Subscription {
     return this
   }
 
-  off (listener = null) {
+  once (listener) {
+    this._client.once(`message:${this._topic}`, listener)
+
+    return this
+  }
+
+  off (listener) {
     this._client.removeMessageListener(this._topic, listener)
 
     return this
