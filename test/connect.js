@@ -1,6 +1,6 @@
 import test from 'ava'
 import {Client} from '../src'
-import {createConnection, getPort} from './_before'
+import {createConnection, getPort} from './_hooks'
 
 test('connect fail', async t => {
   t.plan(1)

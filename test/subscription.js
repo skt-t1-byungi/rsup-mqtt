@@ -1,6 +1,6 @@
 import test from 'ava'
 import delay from 'delay'
-import {createConnection} from './_before'
+import {createConnection} from './_hooks'
 
 test('publish, onMessage', async t => {
   const [receiver, sender] = await Promise.all([createConnection(), createConnection()])
