@@ -28,7 +28,7 @@ type ClientFactory<T extends Client> = (setting: ClientSetting) => T
 
 interface ConnectOptions{
   host: string, 
-  port: number,
+  port?: number,
   path?: string,
   ssl?: boolean,
   clientId?: string,

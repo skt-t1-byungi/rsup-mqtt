@@ -32,43 +32,31 @@ const client = await connect({host:'broker.mqttdashboard.com', port: 8000})
 client.subscribe('topic')
 client.onMessage('topic', message => console.log(message.string))
 client.publish('topic', 'hello mqtt')
-```
-output
-```
-hello mqtt
-```
-### Fluent interface
-```js
-const subscription = client.subscribe('topic');
 
-subscription
-  .on(message => console.log(message.string))
-  .publish('hello mqtt')
-```
-### Listen to all messages
-```js
-client.on('message', (topic, message)=>{
-  console.log(message.string)
-})
+// => hello mqtt
 ```
 
 ## API
-### connect(options:object):Promise\<Client>
-Connects to the broker. supports async/await.
-- `options` (paho options is also available)
-  - `host` required.
-  - `port` defaults `4433`
-  - `path` defaults `'/mqtt'`
-  - `ssl` defaults `false`
-  - `clientId` defaults random string
-  - `keepalive` defaults `20`
-  - `will` optional
-    - `topic`
-    - `payload`
+### connect(options [, Constructor])
+Connects to the broker. returns "Promise<Client>".
+- `options`
+  - `host` - host address, required.
+  - `port` - defaults `443` or `80`.
+  - `path` - defaults `'/'`.
+  - `ssl` - defaults `false`.
+  - `clientId` defaults random string.
+  - `keepalive` defaults `60`.
+  - `username` optional.
+  - `password` optional.
+  - `cleanSession` defaults `false`.
+  - `reconnect` defaults `true`.
+  - `mqttVersion` defaults `4`.
+  - `mqttVersionExplicit` default value is `true` if the "mqttVersion" is 4, and false otherwise.
+  - `will` optional.
+    - `topic` required.
+    - `payload` required. 
     - `qos` defaults `2`
-    - `retain` defaults `false`
-
----
+    - `retain` defaults `false`.
 
 ### Client#on(eventName:string, listener:function)
 Add an event listener.
