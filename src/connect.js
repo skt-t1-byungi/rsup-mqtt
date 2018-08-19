@@ -28,16 +28,13 @@ export default function connect (userOpts = {}, Ctor = Client) {
     keepAliveInterval: keepalive
   }
 
-  if (!host && (!hosts || hosts.length === 0)) {
-    throw new TypeError('`host` option is required.')
-  }
-
   if (will) pahoOpts.will = wrapPahoWill(will)
   if (username) pahoOpts.userName = username
   if (hosts) pahoOpts.hosts = hosts
+
   Object.assign(pahoOpts, etcOpts)
 
-  const paho = new Paho.Client(host || parseUriToOpts(hosts[0]).host, port, path, clientId)
+  const paho = new Paho.Client(host, port, path, clientId)
 
   return pahoConnect(paho, pahoOpts)
     .then(() => {
