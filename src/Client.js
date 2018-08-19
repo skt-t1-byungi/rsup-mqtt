@@ -70,7 +70,7 @@ export default class Client {
     if (!this._emitter.has('error')) {
       throw new Error(response.errorMessage)
     } else {
-      this._emitter.emit('error', response)
+      this._emitter.emit('error', response.errorMessage)
     }
   }
 
@@ -132,7 +132,8 @@ export default class Client {
   }
 
   reconnect () {
+    this._emitter.emit('reconnect', {errorCode: ERROR.OK})
+
     return pahoConnect(this._paho, this._pahoOpts)
-      .then(() => this._emitter.emit('reconnect'))
   }
 }
