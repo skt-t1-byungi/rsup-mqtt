@@ -29,7 +29,7 @@ var connect = require('rsup-mqtt').connect;
 ```js
 const client = await connect('ws://mqtt.test.io')
 
-client.subscribe('topic').on(message => console.log(message))
+client.subscribe('topic').on(message => console.log(message.string))
 client.publish('topic', 'hello mqtt')
 
 // => hello mqtt
@@ -64,7 +64,7 @@ connect('wss://mqtt.test.io/mqtt')
 - `will` Optional.
   - `topic` Required.
   - `payload` Required. 
-  - `qos` Defaults is `2`
+  - `qos` Defaults is `0`
   - `retain` Defaults is `false`.
 
 #### Constructor
@@ -74,59 +74,107 @@ import {Client, connect} from 'rsup-mqtt'
 
 class CustomClient extends Client{ ... }
 
-connect(opts, CustomClient).then(customClient => { ... })
+connect(opts, CustomClient)
+  .then(customClient => { ... })
 
 //or
-connect(opts, setting => new CustomClient(setting)).then(customClient => { ... })
+connect(opts, setting => new CustomClient(setting))
+  .then(customClient => { ... })
 ```
+
+---
 
 ### client.on(eventName, listener)
 Add an event listener.
 
 #### Events
-- message 
-- sent
-- close
-- error
-- reconnect
+- message - When a message is received.
+- sent - when a message is sent.
+- close - When a connection is completely closed.
+- error - When an error occurs.
+- reconnect - When start reconnecting.
 
 ##### Message type event (message, sent)
+Receive topic and message.
+
+```js
+client.on('sent', (topic, message) => console.log(topic, message.string))
+client.publish('test/topic', 'hello~')
+
+// => "test/topic", "hello~"
+```
 
 ##### Error type event (close, error, reconnect)
+Receive error or not.
+```js
+client.on('close', err => {
+  if(err.occurred()) alert('disconnected due to an connection error : ' + err.message)
+})
+```
 
-
-### client.onMessage(topic, listener)
-Add an topic listener.
-
-### Client#once(eventName:string, listener:function)
+### client.once(eventName, listener)
 Add an event listener. Runs once.
 
-### Client#off(eventName:string, listener:function?)
+### client.off(eventName [, listener])
 Remove the event listener(s).
 
-### Client#subscribe(topic:string):Subscription
-Subscribe to a topic.
+```js
+client.off('message', listener)
+client.off('message') // If no listener, remove all,
+```
 
-### Client#unsubscribe(removeListeners:bool = false)
-Unsubscribe from a topic.
+### client.onMessage(topic, listener)
+Add an listener for received message event. 
+```js
+client.onMessage('test/topic', message => console.log(message.string))
+```
 
-### Client#subscribed()
+### client.onSent(topic, listener)
+Add an listener for sent message event. 
+
+### client.removeMessageListener(topic [, listener])
+Remove the listener(s) for received message event.
+
+### client.removeSentListener(topic [, listener])
+Remove the listener(s) for sent message event.
+
+### client.subscribe(topic)
+Subscribe to a topic. Returns subscription instance.
+
+### client.unsubscribe(topic [, removeListeners])
+Unsubscribe from a topic. If `removeListeners` is true, remove all the topic listeners.
+
+### client.subscribed()
 Returns an array of subscribed topic.
+```js
+client.subscribe('test/topic1')
+client.subscribe('test/topic2')
 
-### Client#publish(topic:string, payload:string|object|Buffer, options:object)
+console.log(client.subscribed())
+// => ['test/topic1', 'test/topic2']
+```
+
+### client.publish(topic, payload [, options])
 Publish a message to a topic.
-- `options`
-  - `qos` defaults `2`
-  - `retain` defaults `false`
 
-### Client#send(topic:string, payload:string|object|Buffer, options:object)
-@alias `publish()`
+```js
+client.publish('test/topic', 'hello') // string message
+client.publish('test/topic', {text: 'hello~'}) // Convert object to json string.
+client.publish('test/topic', (new TextEncoder()).encode('hello')) // buffer message
+```
 
-### Client#disconnect()
+#### `options`
+ - `qos` Defaults is `0`.
+ - `retain` Defaults is `false`.
+
+### client.send(topic, payload [, options])
+Alias `client.publish()`.
+
+### client.disconnect()
 Disconnect the connection.
 
-### Client#reconnect():Promise
-Connect again using the same options. supports async/await.
+### client.reconnect()
+Connect again using the same options. Returns `Promise<void>`.
 
 ---
 

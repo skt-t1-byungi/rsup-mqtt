@@ -56,13 +56,19 @@ declare class Message{
   readonly retain: boolean
 }
 
-type MessageBytes = ArrayBufferView | ArrayBuffer
+type MessageBytes = ArrayBufferView | ArrayBuffer | Buffer
 type MessageListener = (message: Message) => void
 type TopicMessageListener = (topic: string, message: Message) => void
-type ResponseListener = (response: PahoResponse) => void
-type MessagePayload = object | string | number | MessageBytes
-interface PahoResponse{errorCode: ERROR, errorMessage: string}
+type ErrorListener = (err: ClientError) => void
+type MessagePayload = object | string | MessageBytes
 interface MessageOptions { qos?: number, retain?: boolean }
+
+declare class ClientError extends Error{
+  readonly code: number
+  readonly message: string
+  is(ERROR): boolean
+  occurred(): boolean
+}
 
 export class Client{
   constructor(setting: ClientSetting)
@@ -73,11 +79,11 @@ export class Client{
   readonly clientId: string
   isConnected(): boolean
   on(eventName: 'message' | 'sent', listener: TopicMessageListener): void
-  on(eventName: 'close' | 'reconnect' | 'error', listener: ResponseListener): void
+  on(eventName: 'close' | 'reconnect' | 'error', listener: ErrorListener): void
   once(eventName: 'message' | 'sent', listener: TopicMessageListener): void
-  once(eventName: 'close' | 'reconnect' | 'error', listener: ResponseListener): void
+  once(eventName: 'close' | 'reconnect' | 'error', listener: ErrorListener): void
   off(eventName: 'message' | 'sent', listener: TopicMessageListener): void
-  off(eventName: 'close' | 'reconnect' | 'error', listener: ResponseListener): void
+  off(eventName: 'close' | 'reconnect' | 'error', listener: ErrorListener): void
   onMessage(topic: string, listener: MessageListener): void
   onSent(topic: string, listener: MessageListener): void
   removeMessageListener(topic: string, listener?: MessageListener): void

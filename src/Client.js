@@ -4,6 +4,7 @@ import Message from './Message'
 import makePahoMessage from './makePahoMessage'
 import pahoConnect from './pahoConnect'
 import ERROR from './errorCodes'
+import ClientError from './ClientError'
 
 export default class Client {
   constructor ({paho, pahoOpts}) {
@@ -57,20 +58,22 @@ export default class Client {
     this._emitter.emit('sent', topic, message)
   }
 
-  _handleOnClose (response) {
-    if (response.reconnect) {
-      this._emitter.emit('reconnect', response)
+  _handleOnClose ({errorCode, errorMessage, reconnect}) {
+    const err = new ClientError(errorCode, errorMessage)
+
+    if (reconnect) {
+      this._emitter.emit('reconnect', err)
     } else {
-      this._emitter.emit('close', response)
+      this._emitter.emit('close', err)
     }
 
     // for error handling
-    if (response.errorCode === ERROR.OK) return
+    if (!err.occurred()) return
 
     if (!this._emitter.has('error')) {
-      throw new Error(response.errorMessage)
+      throw err
     } else {
-      this._emitter.emit('error', response.errorMessage)
+      this._emitter.emit('error', err)
     }
   }
 
@@ -98,6 +101,10 @@ export default class Client {
     this.off(`message:${topic}`, listener)
   }
 
+  removeSentListener (topic, listener) {
+    this.off(`sent:${topic}`, listener)
+  }
+
   subscribe (topic) {
     this._paho.subscribe(topic)
 
@@ -109,7 +116,7 @@ export default class Client {
 
     delete this._subscriptions[topic]
 
-    if (removeListeners) this.off(topic)
+    if (removeListeners) this.removeMessageListener(topic)
   }
 
   subscribed () {
@@ -132,7 +139,7 @@ export default class Client {
   }
 
   reconnect () {
-    this._emitter.emit('reconnect', {errorCode: ERROR.OK})
+    this._emitter.emit('reconnect', new ClientError(ERROR.OK, 'No error.'))
 
     return pahoConnect(this._paho, this._pahoOpts)
   }
