@@ -89,12 +89,12 @@ Add an event listener.
 
 #### Events
 - message - When a message is received.
-- sent - when a message is sent.
+- sent - When a message is sent.
 - close - When a connection is completely closed.
 - error - When an error occurs.
 - reconnect - When start reconnecting.
 
-##### Message type event (message, sent)
+##### Message type event  - `message` | `sent`
 Receive topic and message.
 
 ```js
@@ -104,7 +104,7 @@ client.publish('test/topic', 'hello~')
 // => "test/topic", "hello~"
 ```
 
-##### Error type event (close, error, reconnect)
+##### Error type event - `close` | `error` | `reconnect`
 Receive error or not.
 ```js
 client.on('close', err => {
