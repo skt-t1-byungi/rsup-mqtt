@@ -10,18 +10,22 @@ export default function connect (userOpts = {}, Ctor = Client) {
 
   if (typeof userOpts === 'string') userOpts = parseUriToOpts(userOpts)
 
-  const {
+  let {
+    host,
     path = '/',
     ssl = false,
     clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8),
     keepalive = 60,
     port = ssl ? 443 : 80,
-    host,
     hosts,
     will,
     username,
     ...etcOpts
   } = userOpts
+
+  if (!host) throw new TypeError('`host` option is required!')
+  if (host.slice(-1) === '/') host = host.slice(0, -1)
+  if (path[0] !== '/') path = '/' + path
 
   const pahoOpts = {
     useSSL: ssl,

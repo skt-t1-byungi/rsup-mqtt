@@ -27,10 +27,9 @@ var connect = require('rsup-mqtt').connect;
 ## Example
 ### Basic
 ```js
-const client = await connect({host:'broker.mqttdashboard.com', port: 8000})
+const client = await connect({host:'mqtt.test.io'})
 
-client.subscribe('topic')
-client.onMessage('topic', message => console.log(message.string))
+client.subscribe('topic').on(message => console.log(message))
 client.publish('topic', 'hello mqtt')
 
 // => hello mqtt
@@ -38,32 +37,61 @@ client.publish('topic', 'hello mqtt')
 
 ## API
 ### connect(options [, Constructor])
-Connects to the broker. returns "Promise<Client>".
-- `options`
-  - `host` - host address, required.
-  - `port` - defaults `443` or `80`.
-  - `path` - defaults `'/'`.
-  - `ssl` - defaults `false`.
-  - `clientId` defaults random string.
-  - `keepalive` defaults `60`.
-  - `username` optional.
-  - `password` optional.
-  - `cleanSession` defaults `false`.
-  - `reconnect` defaults `true`.
-  - `mqttVersion` defaults `4`.
-  - `mqttVersionExplicit` default value is `true` if the "mqttVersion" is 4, and false otherwise.
-  - `will` optional.
-    - `topic` required.
-    - `payload` required. 
-    - `qos` defaults `2`
-    - `retain` defaults `false`.
+Connects to the broker. returns `Promise<Client>`.
 
-### Client#on(eventName:string, listener:function)
+```js
+connect({host: 'mqtt.test.io', ssl: true, path: '/mqtt'})
+  .then(client => { ... })
+
+// or
+connect('wss://mqtt.test.io/mqtt')
+  .then(client => { ... })
+```
+
+#### Options
+- `host` - Host address, required.
+- `port` - Defaults is `443` or `80`.
+- `path` - Defaults is `'/'`.
+- `ssl` - Defaults is `false`.
+- `clientId` Defaults is random string.
+- `keepalive` Defaults is `60`.
+- `username` Optional.
+- `password` Optional.
+- `cleanSession` Defaults is `false`.
+- `reconnect` Defaults is `true`.
+- `mqttVersion` Defaults is `4`.
+- `mqttVersionExplicit` Default value is `true` if the "mqttVersion" is 4, and false otherwise.
+- `will` Optional.
+  - `topic` Required.
+  - `payload` Required. 
+  - `qos` Defaults is `2`
+  - `retain` Defaults is `false`.
+
+#### Constructor
+If want to extend Client.
+```js
+import {Client, connect} from 'rsup-mqtt'
+
+class CustomClient extends Client{ ... }
+
+connect(opts, CustomClient).then(customClient => { ... })
+
+//or
+connect(opts, setting => new CustomClient(setting)).then(customClient => { ... })
+```
+
+### client.on(eventName, listener)
 Add an event listener.
+
+```js
+client.on('message', (topic, message)=>{ ... })
+```
 
 #### Events
 - message
+- sent
 - close
+- error
 - reconnect
 
 ### Client#onMessage(topic:string, listener:function)

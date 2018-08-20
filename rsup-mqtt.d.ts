@@ -61,7 +61,7 @@ type MessageListener = (message: Message) => void
 type TopicMessageListener = (topic: string, message: Message) => void
 type ResponseListener = (response: PahoResponse) => void
 type MessagePayload = object | string | number | MessageBytes
-interface PahoResponse{errorCode: number, errorMessage: string}
+interface PahoResponse{errorCode: ERROR, errorMessage: string}
 interface MessageOptions { qos?: number, retain?: boolean }
 
 export class Client{
