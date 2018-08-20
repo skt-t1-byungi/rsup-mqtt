@@ -27,7 +27,7 @@ var connect = require('rsup-mqtt').connect;
 ## Example
 ### Basic
 ```js
-const client = await connect({host:'mqtt.test.io'})
+const client = await connect('ws://mqtt.test.io')
 
 client.subscribe('topic').on(message => console.log(message))
 client.publish('topic', 'hello mqtt')
@@ -37,7 +37,7 @@ client.publish('topic', 'hello mqtt')
 
 ## API
 ### connect(options [, Constructor])
-Connects to the broker. returns `Promise<Client>`.
+Connects to the broker. Returns `Promise<Client>`.
 
 ```js
 connect({host: 'mqtt.test.io', ssl: true, path: '/mqtt'})
@@ -83,18 +83,19 @@ connect(opts, setting => new CustomClient(setting)).then(customClient => { ... }
 ### client.on(eventName, listener)
 Add an event listener.
 
-```js
-client.on('message', (topic, message)=>{ ... })
-```
-
 #### Events
-- message
+- message 
 - sent
 - close
 - error
 - reconnect
 
-### Client#onMessage(topic:string, listener:function)
+##### Message type event (message, sent)
+
+##### Error type event (close, error, reconnect)
+
+
+### client.onMessage(topic, listener)
 Add an topic listener.
 
 ### Client#once(eventName:string, listener:function)
