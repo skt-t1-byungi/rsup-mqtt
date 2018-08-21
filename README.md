@@ -8,7 +8,8 @@
 ## Why
 ![pee](./pee.png)
 
-Paho is fast and light, but interface is not good...
+Paho is fast and light, but interface is not good. 
+So I wrapped a better interface...
 
 ## Install
 ```sh
@@ -89,6 +90,7 @@ connect(opts, setting => new CustomClient(setting))
 ```
 
 ---
+
 ### Client
 
 #### client.on(eventName, listener)
@@ -106,8 +108,8 @@ Receive topic and message. See details about [Message](#message).
 
 ```js
 client.on('sent', (topic, message) => console.log(topic, message.string))
-client.publish('topic', 'hello~')
 
+client.publish('topic', 'hello~')
 // => "topic", "hello~"
 ```
 
@@ -132,6 +134,7 @@ client.off('message') // If no listener, remove all,
 
 #### client.onMessage(topic, listener)
 Add an listener for received message. 
+
 ```js
 client.onMessage('topic', message => console.log(message.string))
 ```
@@ -153,6 +156,7 @@ Unsubscribe from a topic. If `removeListeners` is true, remove all the topic lis
 
 #### client.subscribed()
 Returns an array of subscribed topic.
+
 ```js
 client.subscribe('topic1')
 client.subscribe('topic2')
@@ -184,6 +188,7 @@ Disconnect the connection.
 Connect again using the same options. Returns `Promise<void>`.
 
 ---
+
 ### Subscription
 
 #### subscription.topic
@@ -191,6 +196,7 @@ Subscribed topic.
 
 ```js
 const subscription = client.subscribe('topic')
+
 console.log(subscription.topic)
 // => topic
 ```
@@ -198,7 +204,7 @@ console.log(subscription.topic)
 #### subscription.on(listener)
 Add an listener for received topic message.
 
-### subscriptio.off([listener])
+#### subscription.off([listener])
 Remove the topic listener(s).
 
 #### subscription.publish(payload [, options])
@@ -211,6 +217,7 @@ Alias `subscription.publish()`.
 Unsubscribe from a topic. If `removeListeners` is true, remove all the topic listeners.
 
 ---
+
 ### Message
 
 #### message.topic
