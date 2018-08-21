@@ -9,7 +9,7 @@
 ![pee](./pee.png)
 
 Paho is fast and light, but interface is not good. 
-So I wrapped a better interface...
+So I wrapped to better interface...
 
 ## Install
 ```sh
