@@ -1,7 +1,7 @@
 import { connect } from '../src';
 
 (async () => {
-  const client = await connect({ host: 'broker.mqttdashboard.com', port: 8000 })
+  const client = await connect('ws://test.mosquitto.org:8080')
 
   client.subscribe('topic')
     .on(message => console.log(message.string))

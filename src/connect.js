@@ -14,7 +14,7 @@ export default function connect (userOpts = {}, Ctor = Client) {
     host,
     path = '/',
     ssl = false,
-    clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8),
+    clientId = 'mqtt_' + Math.random().toString(16).substr(2, 8),
     keepalive = 60,
     port = ssl ? 443 : 80,
     hosts,
