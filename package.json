@@ -1,7 +1,7 @@
 {
   "name": "rsup-mqtt",
   "description": "Elegant wrapper for the paho mqtt client",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "dist/rsup-mqtt.cjs.js",
   "module": "dist/rsup-mqtt.es.js",
   "unpkg": "dist/rsup-mqtt.min.js",
