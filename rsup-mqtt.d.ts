@@ -43,7 +43,7 @@ interface ConnectOptions{
 }
 
 export function connect<T extends Client>(
-  opts: ConnectOptions, 
+  opts: ConnectOptions | string, 
   Ctor?: ClientConstructor<T> | ClientFactory<T>): Promise<T>
   
 declare class Message{
