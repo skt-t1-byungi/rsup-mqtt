@@ -93,6 +93,9 @@ connect(opts, setting => new CustomClient(setting))
 
 ### Client
 
+#### client.isConnected()
+ Returns whether the client is connected.
+
 #### client.on(eventName, listener)
 Add an event listener.
 
