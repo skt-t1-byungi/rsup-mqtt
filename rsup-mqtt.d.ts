@@ -48,7 +48,7 @@ export function connect<T extends Client>(
   
 declare class Message{
   readonly topic: string
-  readonly json: object
+  readonly json: object | never
   readonly string: string
   readonly bytes: MessageBytes
   readonly qos: 0 | 1 | 2
