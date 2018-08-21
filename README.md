@@ -1,8 +1,10 @@
 # Rsup MQTT
-> ✨ simple wrapper for the eclipes paho(mqtt client) / better clean interface
+
+📢 Elegant wrapper for the paho mqtt client
 
 [![npm](https://img.shields.io/npm/v/rsup-mqtt.svg?style=flat-square)](https://www.npmjs.com/package/rsup-mqtt)
 [![npm](https://img.shields.io/npm/dt/rsup-mqtt.svg?style=flat-square)](https://www.npmjs.com/package/rsup-mqtt)
+
 
 ## Install
 ```sh
@@ -63,7 +65,7 @@ connect('wss://mqtt.test.io/mqtt')
 - `mqttVersionExplicit` Default value is `true` if the "mqttVersion" is 4, and false otherwise.
 - `will` Optional.
   - `topic` Required.
-  - `payload` Required. 
+  - `payload` Required.
   - `qos` Defaults is `0`
   - `retain` Defaults is `false`.
 
@@ -99,9 +101,9 @@ Receive topic and message.
 
 ```js
 client.on('sent', (topic, message) => console.log(topic, message.string))
-client.publish('test/topic', 'hello~')
+client.publish('topic', 'hello~')
 
-// => "test/topic", "hello~"
+// => "topic", "hello~"
 ```
 
 ##### Error type event - `close` | `error` | `reconnect`
@@ -124,19 +126,19 @@ client.off('message') // If no listener, remove all,
 ```
 
 ### client.onMessage(topic, listener)
-Add an listener for received message event. 
+Add an listener for received message. 
 ```js
-client.onMessage('test/topic', message => console.log(message.string))
+client.onMessage('topic', message => console.log(message.string))
 ```
 
 ### client.onSent(topic, listener)
-Add an listener for sent message event. 
+Add an listener for sent message. 
 
 ### client.removeMessageListener(topic [, listener])
-Remove the listener(s) for received message event.
+Remove the listener(s) for received message.
 
 ### client.removeSentListener(topic [, listener])
-Remove the listener(s) for sent message event.
+Remove the listener(s) for sent message.
 
 ### client.subscribe(topic)
 Subscribe to a topic. Returns subscription instance.
@@ -147,20 +149,20 @@ Unsubscribe from a topic. If `removeListeners` is true, remove all the topic lis
 ### client.subscribed()
 Returns an array of subscribed topic.
 ```js
-client.subscribe('test/topic1')
-client.subscribe('test/topic2')
+client.subscribe('topic1')
+client.subscribe('topic2')
 
 console.log(client.subscribed())
-// => ['test/topic1', 'test/topic2']
+// => ['topic1', 'topic2']
 ```
 
 ### client.publish(topic, payload [, options])
 Publish a message to a topic.
 
 ```js
-client.publish('test/topic', 'hello') // string message
-client.publish('test/topic', {text: 'hello~'}) // Convert object to json string.
-client.publish('test/topic', (new TextEncoder()).encode('hello')) // buffer message
+client.publish('topic', 'hello') // string message
+client.publish('topic', {text: 'hello~'}) // Convert object to json string.
+client.publish('topic', (new TextEncoder()).encode('hello')) // buffer message
 ```
 
 #### `options`
@@ -177,97 +179,94 @@ Disconnect the connection.
 Connect again using the same options. Returns `Promise<void>`.
 
 ---
+### subscription.topic
+Subscribed topic.
 
-### Subscription#on(listener:function):this
-Add an listener.
-
-### Subscription#off(listener:function?):this
-Remove the listener(s).
-
-### Subscription#publish(payload:string|object|Buffer, options:object):this
-Publish a message. (@see `Client#publish`)
-
-### Subscription#send(payload:string|object|Buffer, options:object):this
-@alias `publish()`
-
-### Subscription#unsubscribe(removeListeners:bool = false):this
-Unsubscribe the subscription.
-
----
-### Message#topic:string
-Returns a topic.
-
-### Message#string:string
-Returns a payload of string type.
-
-### Message#json:object
-Returns a payload of json type.
-
-### Message#bytes:Buffer
-Returns a payload of buffer type.
-
-## Better things than Paho Client
-### 🔗 connection process.
-before
-```js
-const client = new Paho.MQTT.Client(host, port);
-
-client.connect({
-  onSuccess:function(){
-    client.subscribe('topic')
-  }
-});
-```
-after
-```js
-const client = await connect({host,  port})
-client.subscribe('topic')
-```
-
-### ✉️ message handling.
-before
-```js
-client.onMessageArrived = message => {
-  const topic = message.destinationName
-  const json = JSON.parse(message.payloadString)
-
-  console.log(topic, json)
-}
-// can not add more listeners
-```
-after
-```js
-client.on('message', (topic, message)=>{
-  console.log(topic, message.json)
-})
-```
-
-### 📬 subscription (fluent interface)
 ```js
 const subscription = client.subscribe('topic')
-
-subscription
-  .on(message => console.log(message.string))
-  .publish('hello mqtt')
-  .unsubscribe()
+console.log(subscription.topic)
+// => topic
 ```
 
-### 🔧 fixed a problem that prevented exception.
-before
+### subscription.on(listener)
+Add an listener for received topic message.
+
+### subscriptio.off([listener])
+Remove the topic listener(s).
+
+### subscription.publish(payload [, options])
+Publish a message to topic.
+
+### subscription.send(payload [, options])
+Alias `subscription.publish()`.
+
+### subscription.unsubscribe([removeListeners])
+Unsubscribe from a topic. If `removeListeners` is true, remove all the topic listeners.
+
+---
+
+### message.topic
+Message's topic.
+
+### message.string
+A payload of string type.
+
+### message.json
+A payload of json type.
+
+### message.bytes
+A payload of buffer type.
+
+### message.qos
+Message's qos. Returns number.
+
+### message.retain
+Message's retain. Returns boolean.
+
+### message.dup
+Duplicate Message or not. Returns boolean.
+
+---
+
+### error.code
+Error's code number.
+
+### error.message
+Error's message
+
+### error.occurred()
+Error occurred or not. Returns boolean.
+
+### error.is(code)
+Compare error code number. Returns boolean.
+
 ```js
-client.onMessageArrived = message => {
-  throw new Error("throws an error")
-}
-// nothing..
+import {ERROR} from 'rsup-mqtt'
+
+console.log(error.is(ERROR.BUFFER_FULL))
+// => true or false
 ```
 
-after
-```js
-client.on('message', (topic, message)=>{
-  throw new Error("throws an error")
-})
-//fire error
-```
+#### Error Codes
+- OK - No error.
+- CONNECT_TIMEOUT - Connect timed out.
+- SUBSCRIBE_TIMEOUT - Subscribe timed out.
+- UNSUBSCRIBE_TIMEOUT - Unsubscribe timed out.
+- PING_TIMEOUT - Ping timed out.
+- INTERNAL_ERROR - Internal error.
+- CONNACK_RETURNCODE - Bad Connack return code.
+- SOCKET_ERROR - Socket error.
+- SOCKET_CLOSE -	Socket closed.
+- MALFORMED_UTF -	Malformed UTF data.
+- UNSUPPORTED - Not supported by this browser.
+- INVALID_STATE - Invalid state.
+- INVALID_TYPE - Invalid type.
+- INVALID_ARGUMENT -	Invalid argument.
+- UNSUPPORTED_OPERATION - Unsupported operation.
+- INVALID_STORED_DATA - Invalid data in local storage.
+- INVALID_MQTT_MESSAGE_TYPE - Invalid MQTT message type.
+- MALFORMED_UNICODE - Malformed Unicode string.
+- BUFFER_FULL - Message buffer is full.
 
 ## License
 MIT

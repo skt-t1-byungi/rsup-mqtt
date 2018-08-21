@@ -61,7 +61,7 @@ type MessageListener = (message: Message) => void
 type TopicMessageListener = (topic: string, message: Message) => void
 type ErrorListener = (err: ClientError) => void
 type MessagePayload = object | string | MessageBytes
-interface MessageOptions { qos?: number, retain?: boolean }
+interface MessageOptions { qos?: 0 | 1 | 2, retain?: boolean }
 
 declare class ClientError extends Error{
   readonly code: number
@@ -97,6 +97,7 @@ export class Client{
 }
 
 declare class Subscription{
+  readonly topic: string
   on (listener: MessageListener): this
   once (listener: MessageListener): this
   off (listener?: MessageListener): this

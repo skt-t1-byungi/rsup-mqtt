@@ -4,6 +4,10 @@ export default class Subscription {
     this._client = client
   }
 
+  get topic () {
+    return this._topic
+  }
+
   on (listener) {
     this._client.onMessage(this._topic, listener)
 
