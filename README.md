@@ -5,6 +5,10 @@
 [![npm](https://img.shields.io/npm/v/rsup-mqtt.svg?style=flat-square)](https://www.npmjs.com/package/rsup-mqtt)
 [![npm](https://img.shields.io/npm/dt/rsup-mqtt.svg?style=flat-square)](https://www.npmjs.com/package/rsup-mqtt)
 
+## Why
+![pee](./pee.png)
+
+Paho is fast and light, but interface is not good...
 
 ## Install
 ```sh
@@ -85,19 +89,20 @@ connect(opts, setting => new CustomClient(setting))
 ```
 
 ---
+### Client
 
-### client.on(eventName, listener)
+#### client.on(eventName, listener)
 Add an event listener.
 
-#### Events
+##### Events
 - message - When a message is received.
 - sent - When a message is sent.
 - close - When a connection is completely closed.
 - error - When an error occurs.
 - reconnect - When start reconnecting.
 
-##### Message type event  - `message` | `sent`
-Receive topic and message.
+###### Message type event  - `message` | `sent`
+Receive topic and message. See details about [Message](#message).
 
 ```js
 client.on('sent', (topic, message) => console.log(topic, message.string))
@@ -106,18 +111,18 @@ client.publish('topic', 'hello~')
 // => "topic", "hello~"
 ```
 
-##### Error type event - `close` | `error` | `reconnect`
-Receive error or not.
+###### Error type event - `close` | `error` | `reconnect`
+Receive error or not. See details about [Error](#error).
 ```js
 client.on('close', err => {
   if(err.occurred()) alert('disconnected due to an connection error : ' + err.message)
 })
 ```
 
-### client.once(eventName, listener)
+#### client.once(eventName, listener)
 Add an event listener. Runs once.
 
-### client.off(eventName [, listener])
+#### client.off(eventName [, listener])
 Remove the event listener(s).
 
 ```js
@@ -125,28 +130,28 @@ client.off('message', listener)
 client.off('message') // If no listener, remove all,
 ```
 
-### client.onMessage(topic, listener)
+#### client.onMessage(topic, listener)
 Add an listener for received message. 
 ```js
 client.onMessage('topic', message => console.log(message.string))
 ```
 
-### client.onSent(topic, listener)
+#### client.onSent(topic, listener)
 Add an listener for sent message. 
 
-### client.removeMessageListener(topic [, listener])
+#### client.removeMessageListener(topic [, listener])
 Remove the listener(s) for received message.
 
-### client.removeSentListener(topic [, listener])
+#### client.removeSentListener(topic [, listener])
 Remove the listener(s) for sent message.
 
-### client.subscribe(topic)
-Subscribe to a topic. Returns subscription instance.
+#### client.subscribe(topic)
+Subscribe to a topic. Returns subscription instance. See details about [Subscription](#subscription).
 
-### client.unsubscribe(topic [, removeListeners])
+#### client.unsubscribe(topic [, removeListeners])
 Unsubscribe from a topic. If `removeListeners` is true, remove all the topic listeners.
 
-### client.subscribed()
+#### client.subscribed()
 Returns an array of subscribed topic.
 ```js
 client.subscribe('topic1')
@@ -156,7 +161,7 @@ console.log(client.subscribed())
 // => ['topic1', 'topic2']
 ```
 
-### client.publish(topic, payload [, options])
+#### client.publish(topic, payload [, options])
 Publish a message to a topic.
 
 ```js
@@ -165,21 +170,23 @@ client.publish('topic', {text: 'hello~'}) // Convert object to json string.
 client.publish('topic', (new TextEncoder()).encode('hello')) // buffer message
 ```
 
-#### `options`
+##### `options`
  - `qos` Defaults is `0`.
  - `retain` Defaults is `false`.
 
-### client.send(topic, payload [, options])
+#### client.send(topic, payload [, options])
 Alias `client.publish()`.
 
-### client.disconnect()
+#### client.disconnect()
 Disconnect the connection.
 
-### client.reconnect()
+#### client.reconnect()
 Connect again using the same options. Returns `Promise<void>`.
 
 ---
-### subscription.topic
+### Subscription
+
+#### subscription.topic
 Subscribed topic.
 
 ```js
@@ -188,56 +195,58 @@ console.log(subscription.topic)
 // => topic
 ```
 
-### subscription.on(listener)
+#### subscription.on(listener)
 Add an listener for received topic message.
 
 ### subscriptio.off([listener])
 Remove the topic listener(s).
 
-### subscription.publish(payload [, options])
+#### subscription.publish(payload [, options])
 Publish a message to topic.
 
-### subscription.send(payload [, options])
+#### subscription.send(payload [, options])
 Alias `subscription.publish()`.
 
-### subscription.unsubscribe([removeListeners])
+#### subscription.unsubscribe([removeListeners])
 Unsubscribe from a topic. If `removeListeners` is true, remove all the topic listeners.
 
 ---
+### Message
 
-### message.topic
+#### message.topic
 Message's topic.
 
-### message.string
+#### message.string
 A payload of string type.
 
-### message.json
+#### message.json
 A payload of json type.
 
-### message.bytes
+#### message.bytes
 A payload of buffer type.
 
-### message.qos
+#### message.qos
 Message's qos. Returns number.
 
-### message.retain
+#### message.retain
 Message's retain. Returns boolean.
 
-### message.dup
+#### message.dup
 Duplicate Message or not. Returns boolean.
 
 ---
+### Error
 
-### error.code
+#### error.code
 Error's code number.
 
-### error.message
+#### error.message
 Error's message
 
-### error.occurred()
+#### error.occurred()
 Error occurred or not. Returns boolean.
 
-### error.is(code)
+#### error.is(code)
 Compare error code number. Returns boolean.
 
 ```js
@@ -247,26 +256,26 @@ console.log(error.is(ERROR.BUFFER_FULL))
 // => true or false
 ```
 
-#### Error Codes
-- OK - No error.
-- CONNECT_TIMEOUT - Connect timed out.
-- SUBSCRIBE_TIMEOUT - Subscribe timed out.
-- UNSUBSCRIBE_TIMEOUT - Unsubscribe timed out.
-- PING_TIMEOUT - Ping timed out.
-- INTERNAL_ERROR - Internal error.
-- CONNACK_RETURNCODE - Bad Connack return code.
-- SOCKET_ERROR - Socket error.
-- SOCKET_CLOSE -	Socket closed.
-- MALFORMED_UTF -	Malformed UTF data.
-- UNSUPPORTED - Not supported by this browser.
-- INVALID_STATE - Invalid state.
-- INVALID_TYPE - Invalid type.
-- INVALID_ARGUMENT -	Invalid argument.
-- UNSUPPORTED_OPERATION - Unsupported operation.
-- INVALID_STORED_DATA - Invalid data in local storage.
-- INVALID_MQTT_MESSAGE_TYPE - Invalid MQTT message type.
-- MALFORMED_UNICODE - Malformed Unicode string.
-- BUFFER_FULL - Message buffer is full.
+##### Error Codes
+- `OK` - No error.
+- `CONNECT_TIMEOUT` - Connect timed out.
+- `SUBSCRIBE_TIMEOUT` - Subscribe timed out.
+- `UNSUBSCRIBE_TIMEOUT` - Unsubscribe timed out.
+- `PING_TIMEOUT` - Ping timed out.
+- `INTERNAL_ERROR` - Internal error.
+- `CONNACK_RETURNCODE` - Bad Connack return code.
+- `SOCKET_ERROR` - Socket error.
+- `SOCKET_CLOSE` -	Socket closed.
+- `MALFORMED_UTF` -	Malformed UTF data.
+- `UNSUPPORTED` - Not supported by this browser.
+- `INVALID_STATE` - Invalid state.
+- `INVALID_TYPE` - Invalid type.
+- `INVALID_ARGUMENT` -	Invalid argument.
+- `UNSUPPORTED_OPERATION` - Unsupported operation.
+- `INVALID_STORED_DATA` - Invalid data in local storage.
+- `INVALID_MQTT_MESSAGE_TYPE` - Invalid MQTT message type.
+- `MALFORMED_UNICODE` - Malformed Unicode string.
+- `BUFFER_FULL` - Message buffer is full.
 
 ## License
 MIT
