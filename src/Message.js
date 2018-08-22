@@ -8,7 +8,9 @@ export default class Message {
   }
 
   get json () {
-    return JSON.parse(this.string)
+    try {
+      return JSON.parse(this.string)
+    } catch (err) { }
   }
 
   get string () {
