@@ -142,5 +142,8 @@ export default class Client {
     this._emitter.emit('reconnect', new ClientError(ERROR.OK, 'No error.'))
 
     return pahoConnect(this._paho, this._pahoOpts)
+      .then(() => {
+        this.subscribed().forEach(topic => this.subscribe(topic))
+      })
   }
 }
