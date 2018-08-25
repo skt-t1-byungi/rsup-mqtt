@@ -61,6 +61,7 @@ connect('wss://mqtt.test.io/mqtt')
 - `path` - Defaults is `'/'`.
 - `ssl` - Defaults is `false`.
 - `clientId` Defaults is random string.
+- `hosts` - Optional. fallback urls.
 - `keepalive` Defaults is `60`.
 - `username` Optional.
 - `password` Optional.
