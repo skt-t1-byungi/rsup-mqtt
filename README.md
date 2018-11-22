@@ -8,7 +8,7 @@
 ## Why
 ![pee](./pee.png)
 
-Paho is fast and light, but interface is not good. 
+Paho is fast and light, but interface is not good.
 So I wrapped to better interface...
 
 ## Install
@@ -137,14 +137,14 @@ client.off('message') // If no listener, remove all,
 ```
 
 #### client.onMessage(topic, listener)
-Add an listener for received message. 
+Add an listener for received message.
 
 ```js
 client.onMessage('topic', message => console.log(message.string))
 ```
 
 #### client.onSent(topic, listener)
-Add an listener for sent message. 
+Add an listener for sent message.
 
 #### client.removeMessageListener(topic [, listener])
 Remove the listener(s) for received message.
@@ -156,7 +156,7 @@ Remove the listener(s) for sent message.
 Subscribe to a topic. Returns subscription instance. See details about [Subscription](#subscription).
 
 #### client.unsubscribe(topic [, removeListeners])
-Unsubscribe from a topic. If `removeListeners` is true, remove all the topic listeners.
+Unsubscribe from a topic. If no `removeListeners` argument, remove all listeners.
 
 #### client.subscribed()
 Returns an array of subscribed topic.
