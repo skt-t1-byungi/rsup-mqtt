@@ -1,65 +1,64 @@
 {
-  "name": "rsup-mqtt",
-  "description": "Elegant wrapper for the paho mqtt client",
-  "version": "2.0.3",
-  "main": "dist/rsup-mqtt.cjs.js",
-  "module": "dist/rsup-mqtt.es.js",
-  "unpkg": "dist/rsup-mqtt.min.js",
-  "types": "rsup-mqtt.d.ts",
-  "author": {
-    "email": "tiniwz@gmail.com",
-    "name": "skt-t1-byungi"
-  },
-  "keywords": [
-    "mqtt",
-    "client",
-    "paho"
-  ],
-  "files": [
-    "dist/",
-    "rsup-mqtt.d.ts"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/skt-t1-byungi/rsup-mqtt.git"
-  },
-  "license": "MIT",
-  "scripts": {
-    "dev": "poi example/example",
-    "build": "bili --format cjs,es,umd-min --name rsup-mqtt --module-name RsupMQTT",
-    "prepublishOnly": "npm run build",
-    "test": "ava"
-  },
-  "dependencies": {
-    "@skt-t1-byungi/event-emitter": "^0.1.1",
-    "paho-client": "https://github.com/eclipse/paho.mqtt.javascript#v1.1.0"
-  },
-  "devDependencies": {
-    "ava": "^0.25.0",
-    "bili": "^3.1.2",
-    "browser-env": "^3.2.5",
-    "delay": "^3.0.0",
-    "eslint": "^5.3.0",
-    "eslint-config-byungi": "^0.0.17",
-    "esm": "^3.0.77",
-    "get-port": "^4.0.0",
-    "mosca": "^2.8.3",
-    "poi": "^9.6.13"
-  },
-  "eslintConfig": {
-    "extends": "byungi",
-    "env": {
-      "browser": true,
-      "node": true
+    "name": "rsup-mqtt",
+    "description": "Elegant wrapper for the paho mqtt client",
+    "version": "2.0.3",
+    "main": "dist/rsup-mqtt.cjs.js",
+    "module": "dist/rsup-mqtt.es.js",
+    "unpkg": "dist/rsup-mqtt.min.js",
+    "types": "rsup-mqtt.d.ts",
+    "author": {
+        "email": "tiniwz@gmail.com",
+        "name": "skt-t1-byungi"
+    },
+    "keywords": [
+        "mqtt",
+        "client",
+        "paho"
+    ],
+    "files": [
+        "dist/",
+        "rsup-mqtt.d.ts"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/skt-t1-byungi/rsup-mqtt.git"
+    },
+    "license": "MIT",
+    "scripts": {
+        "dev": "poi example/example",
+        "build": "bili --format cjs,es,umd-min --name rsup-mqtt --module-name RsupMQTT",
+        "prepublishOnly": "npm run build",
+        "test": "ava"
+    },
+    "dependencies": {
+        "@skt-t1-byungi/event-emitter": "^0.1.1",
+        "paho-client": "https://github.com/eclipse/paho.mqtt.javascript#v1.1.0"
+    },
+    "devDependencies": {
+        "ava": "^0.25.0",
+        "bili": "^3.4.2",
+        "browser-env": "^3.2.5",
+        "delay": "^4.1.0",
+        "eslint": "^5.9.0",
+        "eslint-config-byungi": "^0.2.3",
+        "esm": "^3.0.84",
+        "get-port": "^4.0.0",
+        "mosca": "^2.8.3",
+        "poi": "^9.6.13"
+    },
+    "eslintConfig": {
+        "extends": "byungi",
+        "env": {
+            "browser": true
+        }
+    },
+    "eslintIgnore": [
+        "dist"
+    ],
+    "ava": {
+        "require": [
+            "esm",
+            "./test/helpers/browserEnv.js"
+        ]
     }
-  },
-  "eslintIgnore": [
-    "dist"
-  ],
-  "ava": {
-    "require": [
-      "esm",
-      "./test/helpers/browserEnv.js"
-    ]
-  }
 }

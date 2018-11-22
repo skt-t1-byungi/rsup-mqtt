@@ -1,46 +1,46 @@
 export default class Subscription {
-  constructor (topic, client) {
-    this._topic = topic
-    this._client = client
-  }
+    constructor (topic, client) {
+        this._topic = topic
+        this._client = client
+    }
 
-  get topic () {
-    return this._topic
-  }
+    get topic () {
+        return this._topic
+    }
 
-  on (listener) {
-    this._client.onMessage(this._topic, listener)
+    on (listener) {
+        this._client.onMessage(this._topic, listener)
 
-    return this
-  }
+        return this
+    }
 
-  once (listener) {
-    this._client.once(`message:${this._topic}`, listener)
+    once (listener) {
+        this._client.once(`message:${this._topic}`, listener)
 
-    return this
-  }
+        return this
+    }
 
-  off (listener) {
-    this._client.removeMessageListener(this._topic, listener)
+    off (listener) {
+        this._client.removeMessageListener(this._topic, listener)
 
-    return this
-  }
+        return this
+    }
 
-  unsubscribe (removeListeners = false) {
-    this._client.unsubscribe(this._topic, removeListeners)
+    unsubscribe (removeListeners = false) {
+        this._client.unsubscribe(this._topic, removeListeners)
 
-    return this
-  }
+        return this
+    }
 
-  send (...args) {
-    this._client.send(this._topic, ...args)
+    send (...args) {
+        this._client.send(this._topic, ...args)
 
-    return this
-  }
+        return this
+    }
 
-  publish (...args) {
-    this.send(...args)
+    publish (...args) {
+        this.send(...args)
 
-    return this
-  }
+        return this
+    }
 }
