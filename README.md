@@ -156,7 +156,7 @@ Remove the listener(s) for sent message.
 Subscribe to a topic. Returns subscription instance. See details about [Subscription](#subscription).
 
 #### client.unsubscribe(topic [, removeListeners])
-Unsubscribe from a topic. If no `removeListeners` argument, remove all listeners.
+Unsubscribe from a topic. If `removeListeners` is true, remove all the topic listeners.
 
 #### client.subscribed()
 Returns an array of subscribed topic.
