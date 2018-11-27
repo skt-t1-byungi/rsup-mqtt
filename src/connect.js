@@ -1,4 +1,4 @@
-import Paho from 'paho-client'
+import Paho from 'paho-mqtt'
 import Client from './Client'
 import makePahoMessage from './makePahoMessage'
 import pahoConnect from './pahoConnect'

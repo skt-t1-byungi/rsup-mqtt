@@ -25,14 +25,14 @@
     },
     "license": "MIT",
     "scripts": {
-        "dev": "poi example/example",
+        "dev": "poi example/basic",
         "build": "bili --format cjs,es,umd-min --name rsup-mqtt --module-name RsupMQTT",
         "prepublishOnly": "npm run build",
         "test": "ava"
     },
     "dependencies": {
         "@skt-t1-byungi/event-emitter": "^0.1.1",
-        "paho-client": "https://github.com/eclipse/paho.mqtt.javascript#v1.1.0"
+        "paho-mqtt": "^1.1.0"
     },
     "devDependencies": {
         "ava": "^0.25.0",
@@ -44,7 +44,7 @@
         "esm": "^3.0.84",
         "get-port": "^4.0.0",
         "mosca": "^2.8.3",
-        "poi": "^9.6.13"
+        "poi": "^10.2.11"
     },
     "eslintConfig": {
         "extends": "byungi",

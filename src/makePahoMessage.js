@@ -1,4 +1,4 @@
-import Paho from 'paho-client'
+import Paho from 'paho-mqtt'
 
 export default function makePahoMessage (topic, payload, opts = {}) {
     if (typeof payload === 'object' && !isBuffer(payload)) {
