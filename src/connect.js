@@ -2,6 +2,7 @@ import Paho from 'paho-mqtt'
 import Client from './Client'
 import makePahoMessage from './makePahoMessage'
 import pahoConnect from './pahoConnect'
+import xtend from 'xtend/mutable'
 
 export default function connect (userOpts = {}, Ctor = Client) {
     if (typeof Ctor !== 'function') {
@@ -23,20 +24,26 @@ export default function connect (userOpts = {}, Ctor = Client) {
         ...etcOpts
     } = userOpts
 
-    if (!host) throw new TypeError('`host` option is required!')
-    if (host.slice(-1) === '/') host = host.slice(0, -1)
-    if (path[0] !== '/') path = '/' + path
-
     const pahoOpts = {
         useSSL: ssl,
         keepAliveInterval: keepalive
     }
 
+    if (!host) {
+        if (hosts && hosts.length > 0) {
+            host = hosts[0]
+        } else {
+            throw new TypeError('`host` option is required!')
+        }
+    }
+    if (host.slice(-1) === '/') host = host.slice(0, -1)
+    if (path[0] !== '/') path = '/' + path
+
     if (will) pahoOpts.will = wrapPahoWill(will)
     if (username) pahoOpts.userName = username
     if (hosts) pahoOpts.hosts = hosts
 
-    Object.assign(pahoOpts, etcOpts)
+    xtend(pahoOpts, etcOpts)
 
     const paho = new Paho.Client(host, port, path, clientId)
 
