@@ -3,6 +3,6 @@ export default class ClientError extends Error {
         super(message)
         this.code = code
         this.is = code => this.code === code
-        this.occurred = () => this.code === 0
+        this.occurred = () => this.code !== 0
     }
 }
