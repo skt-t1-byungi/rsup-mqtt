@@ -26,7 +26,7 @@
     "license": "MIT",
     "scripts": {
         "dev": "poi example/basic --serve",
-        "build": "bili --format cjs,es,umd-min --name rsup-mqtt --module-name RsupMQTT",
+        "build": "bili --format cjs,es,umd-min --module-name RsupMQTT",
         "prepublishOnly": "npm run build",
         "test": "ava"
     },
