@@ -2,8 +2,8 @@
 
 📢 Elegant wrapper for the paho mqtt client
 
-[![npm](https://img.shields.io/npm/v/rsup-mqtt.svg?style=flat-square)](https://www.npmjs.com/package/rsup-mqtt)
-[![npm](https://img.shields.io/npm/dt/rsup-mqtt.svg?style=flat-square)](https://www.npmjs.com/package/rsup-mqtt)
+[![npm](https://flat.badgen.net/npm/v/rsup-mqtt)](https://www.npmjs.com/package/rsup-mqtt)
+[![downloads](https://flat.badgen.net/npm/dt/rsup-mqtt)](https://www.npmjs.com/package/rsup-mqtt)
 
 ## Why
 ![pee](./pee.png)

@@ -1,4 +1,4 @@
-import EventEmitter from '@skt-t1-byungi/event-emitter'
+import EventEmitter from '@byungi/event-emitter'
 import Subscription from './Subscription'
 import Message from './Message'
 import makePahoMessage from './makePahoMessage'
