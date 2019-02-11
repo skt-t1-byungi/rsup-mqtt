@@ -25,7 +25,7 @@
     },
     "license": "MIT",
     "scripts": {
-        "dev": "poi example/basic",
+        "dev": "poi example/basic --serve",
         "build": "bili --format cjs,es,umd-min --name rsup-mqtt --module-name RsupMQTT",
         "prepublishOnly": "npm run build",
         "test": "ava"
@@ -36,16 +36,16 @@
         "xtend": "^4.0.1"
     },
     "devDependencies": {
-        "ava": "^0.25.0",
-        "bili": "^3.4.2",
+        "ava": "^1.2.1",
+        "bili": "^4.2.5",
         "browser-env": "^3.2.5",
         "delay": "^4.1.0",
-        "eslint": "^5.9.0",
-        "eslint-config-byungi": "^0.2.3",
-        "esm": "^3.0.84",
-        "get-port": "^4.0.0",
+        "eslint": "^5.13.0",
+        "eslint-config-byungi": "^0.2.5",
+        "esm": "^3.2.4",
+        "get-port": "^4.1.0",
         "mosca": "^2.8.3",
-        "poi": "^10.2.11"
+        "poi": "^12.5.5"
     },
     "eslintConfig": {
         "extends": "byungi",
