@@ -2,9 +2,9 @@
     "name": "rsup-mqtt",
     "description": "Elegant wrapper for the paho mqtt client",
     "version": "2.0.10",
-    "main": "dist/rsup-mqtt.cjs.js",
-    "module": "dist/rsup-mqtt.es.js",
-    "unpkg": "dist/rsup-mqtt.min.js",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "unpkg": "dist/index.umd.min.js",
     "types": "rsup-mqtt.d.ts",
     "author": {
         "email": "tiniwz@gmail.com",
@@ -26,7 +26,7 @@
     "license": "MIT",
     "scripts": {
         "dev": "poi example/basic --serve",
-        "build": "bili --format cjs,es,umd-min --module-name RsupMQTT",
+        "build": "rm -rf dist && bili --format cjs,es,umd-min --module-name RsupMQTT --no-map",
         "prepublishOnly": "npm run build",
         "test": "ava"
     },
