@@ -31,21 +31,21 @@
         "test": "ava"
     },
     "dependencies": {
-        "@byungi/event-emitter": "^1.0.3",
+        "@byungi/event-emitter": "^1.1.0",
         "paho-mqtt": "^1.1.0",
-        "xtend": "^4.0.1"
+        "xtend": "^4.0.2"
     },
     "devDependencies": {
-        "ava": "^1.2.1",
-        "bili": "^4.2.5",
-        "browser-env": "^3.2.5",
-        "delay": "^4.1.0",
-        "eslint": "^5.13.0",
-        "eslint-config-byungi": "^0.2.5",
-        "esm": "^3.2.4",
-        "get-port": "^4.1.0",
+        "ava": "^2.2.0",
+        "bili": "^4.8.0",
+        "browser-env": "^3.2.6",
+        "delay": "^4.3.0",
+        "eslint": "^6.0.1",
+        "eslint-config-byungi": "^0.3.0",
+        "esm": "^3.2.25",
+        "get-port": "^5.0.0",
         "mosca": "^2.8.3",
-        "poi": "^12.5.5"
+        "poi": "^12.7.0"
     },
     "eslintConfig": {
         "extends": "byungi",
