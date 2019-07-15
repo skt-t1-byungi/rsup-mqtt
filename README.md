@@ -43,7 +43,7 @@ client.publish('topic', 'hello mqtt')
 ```
 
 ## API
-### connect(options [, Constructor])
+### connect(options)
 Connects to the broker. Returns `Promise<Client>`.
 
 ```js
@@ -75,6 +75,8 @@ connect('wss://mqtt.test.io/mqtt')
   - `qos` Defaults is `0`
   - `retain` Defaults is `false`.
 
+- `Constructor` - See [`Constructor`](#Constructor)
+
 #### Constructor
 If want to extend Client.
 ```js
@@ -82,12 +84,7 @@ import {Client, connect} from 'rsup-mqtt'
 
 class CustomClient extends Client{ ... }
 
-connect(opts, CustomClient)
-  .then(customClient => { ... })
-
-//or
-connect(opts, setting => new CustomClient(setting))
-  .then(customClient => { ... })
+connect({ Constructor: CustomClient, ...opts })
 ```
 
 ---

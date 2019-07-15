@@ -4,11 +4,7 @@ import makePahoMessage from './makePahoMessage'
 import pahoConnect from './pahoConnect'
 import xtend from 'xtend/mutable'
 
-export default function connect (userOpts = {}, Ctor = Client) {
-    if (typeof Ctor !== 'function') {
-        throw new TypeError('The second argument must be a function, or a constructor.')
-    }
-
+export default function connect (userOpts = {}, CtorDeprecated = Client) {
     if (typeof userOpts === 'string') userOpts = parseUriToOpts(userOpts)
 
     let {
@@ -18,11 +14,16 @@ export default function connect (userOpts = {}, Ctor = Client) {
         clientId = 'mqtt_' + Math.random().toString(16).substr(2, 8),
         keepalive = 60,
         port = ssl ? 443 : 80,
+        Constructor = CtorDeprecated || Client,
         hosts,
         will,
         username,
         ...etcOpts
     } = userOpts
+
+    if (typeof Constructor !== 'function') {
+        throw new TypeError('The second argument must be a function, or a constructor.')
+    }
 
     const pahoOpts = {
         useSSL: ssl,
@@ -49,7 +50,7 @@ export default function connect (userOpts = {}, Ctor = Client) {
 
     return pahoConnect(paho, pahoOpts)
         .then(() => {
-            return createClient(Ctor, { paho, pahoOpts })
+            return createClient(Constructor, { paho, pahoOpts })
         })
 }
 
