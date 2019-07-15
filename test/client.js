@@ -1,19 +1,22 @@
-import test from 'ava'
+import { serial as test } from 'ava'
 import delay from 'delay'
-import { createConnection } from './_hooks'
+import { injectServerIntoContext } from './_helpers'
+
+injectServerIntoContext(test)
 
 test('publish', async t => {
-    const client = await createConnection()
+    const { client, getPacket } = await t.context.connect()
     client.publish('topic/test1', 'hello~')
 
     await delay(300)
 
-    t.is(client.getCtx('topic'), 'topic/test1')
-    t.is(client.getCtx('payload').toString(), 'hello~')
+    t.is(getPacket().topic, 'topic/test1')
+    t.is(getPacket().payload.toString(), 'hello~')
 })
 
 test('subscribe, onMessage', async t => {
-    const [receiver, sender] = await Promise.all([createConnection(), createConnection()])
+    const { connect } = t.context
+    const [{ client: receiver }, { client: sender }] = await Promise.all([connect(), connect()])
     receiver.subscribe('topic/subscribe-test')
 
     t.plan(1)
@@ -24,7 +27,8 @@ test('subscribe, onMessage', async t => {
 })
 
 test('unsubscribe', async t => {
-    const [receiver, sender] = await Promise.all([createConnection(), createConnection()])
+    const { connect } = t.context
+    const [{ client: receiver }, { client: sender }] = await Promise.all([connect(), connect()])
 
     receiver.subscribe('topic/unsubscribe-test')
     receiver.onMessage('topic/unsubscribe-test', m => t.is(m.string, 'test1'))
@@ -32,7 +36,7 @@ test('unsubscribe', async t => {
 
     await delay(300)
 
-    receiver.onMessage('topic/unsubscribe-test', m => t.fail())
+    receiver.onMessage('topic/unsubscribe-test', () => t.fail())
     receiver.unsubscribe('topic/unsubscribe-test')
 
     sender.publish('topic/unsubscribe-test', 'test1')
@@ -42,7 +46,7 @@ test('unsubscribe', async t => {
 })
 
 test('subscribed', async t => {
-    const client = await createConnection()
+    const { client } = await t.context.connect()
 
     client.subscribe('topic/test1')
     client.subscribe('topic/test2')
@@ -51,7 +55,9 @@ test('subscribed', async t => {
 })
 
 test('onSent', async t => {
-    const [receiver, sender] = await Promise.all([createConnection(), createConnection()])
+    const { connect } = t.context
+    const [{ client: receiver }, { client: sender }] = await Promise.all([connect(), connect()])
+
     receiver.subscribe('topic/onset-test')
 
     t.plan(2)
@@ -68,14 +74,16 @@ test('onSent', async t => {
 })
 
 test('disconnect, reconnect, close and reconnect evt', async t => {
-    const client = await createConnection()
+    const { client } = await t.context.connect()
 
     t.plan(5)
     client.on('close', resp => t.pass())
     client.on('reconnect', resp => t.pass())
     t.true(client.isConnected())
+
     client.disconnect()
     t.false(client.isConnected())
+
     await client.reconnect()
     t.true(client.isConnected())
 })

@@ -1,48 +1,52 @@
-import test from 'ava'
-import { Client } from '../src'
-import { createConnection, getPort } from './_hooks'
+import { serial as test } from 'ava'
+import { connect, Client } from '../src'
+import { injectServerIntoContext } from './_helpers'
+
+injectServerIntoContext(test)
 
 test('connect fail', async t => {
     t.plan(1)
     try {
-        await createConnection({ host: 'localhost', port: 1 })
+        await connect({ host: 'localhost', port: 1 })
     } catch (err) {
         t.pass()
     }
 })
 
 test('connect success', async t => {
-    const client = await createConnection()
+    const { client } = await t.context.connect()
     t.true(client instanceof Client)
 })
 
 test('normalize uri', async t => {
-    const uri = 'ws://localhost:' + getPort()
-    const client = await createConnection(uri + '/test')
+    const { port, connect } = t.context
+    const uri = 'ws://localhost:' + port
+    const { client } = await connect(uri + '/test')
 
     t.truthy(client.uri.match(uri))
     t.is(client.host, 'localhost')
-    t.is(client.port, getPort())
+    t.is(client.port, port)
     t.is(client.path, '/test')
 })
 
 test('hosts fallback', async t => {
-    const client = await createConnection({
+    const { port, connect } = t.context
+    const { client } = await connect({
         hosts: [
             'ws://localhost:1/',
-            `ws://localhost:${getPort()}/`
+            `ws://localhost:${port}/`
         ]
     })
-
-    t.is(client.port, getPort())
+    t.is(client.port, port)
 })
 
 test('custom client instance', async t => {
+    const { connect } = t.context
     const CustomClient = class extends Client {}
 
-    const client1 = await createConnection(null, CustomClient)
+    const { client: client1 } = await connect(null, CustomClient)
     t.true(client1 instanceof CustomClient)
 
-    const client2 = await createConnection(null, setting => new CustomClient(setting))
+    const { client: client2 } = await connect(null, setting => new CustomClient(setting))
     t.true(client2 instanceof CustomClient)
 })

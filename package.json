@@ -59,7 +59,7 @@
     "ava": {
         "require": [
             "esm",
-            "./test/helpers/browserEnv.js"
+            "./test/_browserEnv.js"
         ]
     }
 }
