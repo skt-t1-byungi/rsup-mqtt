@@ -23,12 +23,11 @@ export enum ERROR{
 }
 
 interface ClientSetting {paho: object, pahoOpts: object}
-type ClientConstructor<T extends Client> = {new(setting: ClientSetting): T}
-type ClientFactory<T extends Client> = (setting: ClientSetting) => T
 
-interface ConnectOptions{
-    host: string,
-    hosts: string[],
+interface ConnectOptions<T extends Client>{
+    host?: string,
+    hosts?: string[],
+    Constructor?: T,
     port?: number,
     path?: string,
     ssl?: boolean,
@@ -43,8 +42,7 @@ interface ConnectOptions{
     mqttVersionExplicit?: boolean
 }
 
-export function connect<T extends Client>(
-    opts: ConnectOptions | string, Ctor?: ClientConstructor<T> | ClientFactory<T> ): Promise<T>
+export function connect<T extends Client>(opts: ConnectOptions<T> | string): Promise<T>
 
 declare class Message{
     readonly topic: string
