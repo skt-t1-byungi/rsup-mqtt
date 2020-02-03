@@ -2,7 +2,7 @@ import Paho from 'paho-mqtt'
 import Client from './Client'
 import makePahoMessage from './makePahoMessage'
 import pahoConnect from './pahoConnect'
-import xtend from 'xtend/mutable'
+import deepExtend from 'deep-extend'
 
 export default function connect (userOpts = {}, CtorDeprecated = Client) {
     if (typeof userOpts === 'string') userOpts = parseUriToOpts(userOpts)
@@ -44,7 +44,7 @@ export default function connect (userOpts = {}, CtorDeprecated = Client) {
     if (username) pahoOpts.userName = username
     if (hosts) pahoOpts.hosts = hosts
 
-    xtend(pahoOpts, etcOpts)
+    deepExtend(pahoOpts, etcOpts)
 
     const paho = new Paho.Client(host, port, path, clientId)
 

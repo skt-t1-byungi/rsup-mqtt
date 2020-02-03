@@ -1,9 +1,9 @@
-import xtend from 'xtend/immutable'
+import deepExtend from 'deep-extend'
 
 export default function (paho, opts = {}) {
     return new Promise((resolve, reject) => {
         paho.connect(
-            xtend(opts, {
+            deepExtend(opts, {
                 onSuccess: resolve,
                 onFailure: error => reject(error)
             })
