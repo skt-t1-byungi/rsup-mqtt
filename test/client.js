@@ -87,3 +87,18 @@ test('disconnect, reconnect, close and reconnect evt', async t => {
     await client.reconnect()
     t.true(client.isConnected())
 })
+
+test('willMessage', async t => {
+    const { connect } = t.context
+    const [{ client: sender }, { client: receiver }] = await Promise.all([
+        connect({ will: { topic: 'topic/willMessage', payload: 'closed' } }),
+        connect()
+    ])
+    receiver.subscribe('topic/willMessage')
+
+    t.plan(1)
+    receiver.onMessage('topic/willMessage', m => t.is(m.string, 'closed'))
+    sender.disconnect()
+
+    await delay(300)
+})

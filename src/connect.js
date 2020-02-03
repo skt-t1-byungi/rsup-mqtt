@@ -40,7 +40,7 @@ export default function connect (userOpts = {}, CtorDeprecated = Client) {
     if (host.slice(-1) === '/') host = host.slice(0, -1)
     if (path[0] !== '/') path = '/' + path
 
-    if (will) pahoOpts.will = wrapPahoWill(will)
+    if (will) pahoOpts.willMessage = wrapPahoWill(will)
     if (username) pahoOpts.userName = username
     if (hosts) pahoOpts.hosts = hosts
 
