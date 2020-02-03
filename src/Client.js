@@ -127,9 +127,6 @@ export default class Client {
         this._paho.send(makePahoMessage(topic, payload, opts))
     }
 
-    /**
-   * @alias this.send
-   */
     publish (...args) {
         this.send(...args)
     }

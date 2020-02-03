@@ -5,7 +5,7 @@ import pahoConnect from './pahoConnect'
 import deepExtend from 'deep-extend'
 
 export default function connect (userOpts = {}, CtorDeprecated = Client) {
-    if (typeof userOpts === 'string') userOpts = parseUriToOpts(userOpts)
+    if (typeof userOpts === 'string') userOpts = parseUri(userOpts)
 
     let {
         host,
@@ -40,31 +40,22 @@ export default function connect (userOpts = {}, CtorDeprecated = Client) {
     if (host.slice(-1) === '/') host = host.slice(0, -1)
     if (path[0] !== '/') path = '/' + path
 
-    if (will) pahoOpts.willMessage = wrapPahoWill(will)
+    if (will) pahoOpts.willMessage = makePahoMessage(will.topic, will.payload, will)
     if (username) pahoOpts.userName = username
     if (hosts) pahoOpts.hosts = hosts
 
-    deepExtend(pahoOpts, etcOpts)
-
     const paho = new Paho.Client(host, port, path, clientId)
 
-    return pahoConnect(paho, pahoOpts)
-        .then(() => {
-            return createClient(Constructor, { paho, pahoOpts })
-        })
-}
-
-function wrapPahoWill ({ topic, payload, ...opts }) {
-    return makePahoMessage(topic, payload, opts)
+    return pahoConnect(paho, deepExtend(pahoOpts, etcOpts))
+        .then(() => createClient(Constructor, { paho, pahoOpts }))
 }
 
 function createClient (Ctor, setting) {
     return (Client === Ctor || Ctor.prototype instanceof Client) ? new Ctor(setting) : Ctor(setting)
 }
 
-function parseUriToOpts (str) {
+function parseUri (str) {
     const regexp = /^((wss?):\/\/)?([^/]+?)(:(\d+))?(\/.*)?$/
     const [,, protocol, host,, port, path] = str.match(regexp)
-
     return { ssl: protocol === 'wss', port: port && parseInt(port), host, path }
 }
